@@ -13,9 +13,9 @@ class Slot(QObject):
     def login(self):
         _id = self.MainWindow.findChild(QtWidgets.QLineEdit, "idLineEdit").text()
         password = self.MainWindow.findChild(QtWidgets.QLineEdit, "passwordLineEdit").text()
-        result = RequestHandle.login(self.req, _id, password)
-        if result:
-            print("로그인 성공")
+        response = RequestHandle.login(self.req, _id, password)
+        if response:
+            self.MainWindow.Render.home(response)
         else:
             self.MainWindow.Render.loginfailed()
     

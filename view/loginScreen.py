@@ -11,12 +11,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(221, 163)
+        MainWindow.resize(221, 145)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setMinimumSize(QtCore.QSize(221, 145))
+        MainWindow.setMaximumSize(QtCore.QSize(221, 145))
         MainWindow.setStyleSheet("background-color:rgb(250, 255, 151)")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -48,6 +50,7 @@ class Ui_MainWindow(object):
         self.loginLayout.addWidget(self.passwordLabel, 1, 0, 1, 1)
         self.passwordLineEdit = QtWidgets.QLineEdit(self.layoutWidget)
         self.passwordLineEdit.setMaxLength(16)
+        self.passwordLineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
         self.passwordLineEdit.setObjectName("passwordLineEdit")
         self.loginLayout.addWidget(self.passwordLineEdit, 1, 1, 1, 1)
         self.idLabel = QtWidgets.QLabel(self.layoutWidget)
@@ -74,9 +77,6 @@ class Ui_MainWindow(object):
         self.loginButtonLayout.addWidget(self.loginButton)
         self.loginLayout.addLayout(self.loginButtonLayout, 2, 0, 1, 2)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

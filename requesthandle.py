@@ -21,4 +21,5 @@ class RequestHandle:
         if response.text.find('<p class="nickname">') == -1:
             return False
         else:
-            return True
+            print(response.text)
+            return response.text
