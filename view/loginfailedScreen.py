@@ -43,7 +43,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Failed"))
         self.label.setText(_translate("Dialog", "아이디나 비밀번호를 바르게 입력해주세요."))
         self.cancelButton.setText(_translate("Dialog", "확인"))
 

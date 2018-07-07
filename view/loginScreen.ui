@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Login</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color:rgb(250, 255, 151)</string>

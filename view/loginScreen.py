@@ -83,7 +83,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Login"))
         self.titleLabel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#ff5500;\">Everytime Utility</span></p></body></html>"))
         self.passwordLabel.setText(_translate("MainWindow", "Password"))
         self.idLabel.setText(_translate("MainWindow", "ID"))

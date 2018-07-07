@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Util</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color:rgb(250, 255, 151)</string>
@@ -39,9 +39,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>220</y>
+      <y>222</y>
       <width>331</width>
-      <height>131</height>
+      <height>129</height>
      </rect>
     </property>
     <property name="maximumSize">
@@ -74,7 +74,7 @@ p, li { white-space: pre-wrap; }
       <x>0</x>
       <y>0</y>
       <width>141</width>
-      <height>92</height>
+      <height>101</height>
      </rect>
     </property>
     <property name="font">
@@ -203,9 +203,9 @@ color:rgb(8, 53, 255)</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>90</y>
-      <width>121</width>
-      <height>132</height>
+      <y>101</y>
+      <width>141</width>
+      <height>121</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="menuLayout">
@@ -216,7 +216,7 @@ color:rgb(8, 53, 255)</string>
       <number>0</number>
      </property>
      <item>
-      <widget class="QToolButton" name="deletionButton">
+      <widget class="QToolButton" name="deleteButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -287,7 +287,7 @@ background-color:rgb(156, 226, 255)</string>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton_4">
+      <widget class="QToolButton" name="configButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
@@ -305,34 +305,30 @@ background-color:rgb(156, 226, 255)</string>
 background-color:rgb(156, 226, 255)</string>
        </property>
        <property name="text">
-        <string>미구현</string>
+        <string>설정</string>
        </property>
       </widget>
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="contentLabel">
+   <widget class="QWidget" name="Form" native="true">
     <property name="geometry">
      <rect>
       <x>140</x>
       <y>0</y>
       <width>191</width>
-      <height>221</height>
+      <height>223</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color:rgb(208, 206, 255)</string>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::Panel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Sunken</enum>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
    </widget>
+   <zorder>progressTextEdit</zorder>
+   <zorder>verticalLayoutWidget</zorder>
+   <zorder>verticalLayoutWidget_2</zorder>
+   <zorder>Form</zorder>
+   <zorder>textEdit</zorder>
   </widget>
  </widget>
  <resources/>

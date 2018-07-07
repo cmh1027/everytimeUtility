@@ -14,7 +14,11 @@ class Window(QtWidgets.QMainWindow):
             adapter = HTTPAdapter(max_retries=retry)
             self.req.mount('https://www.everytime.kr', adapter)
 
-    def init(self, render, signal, slot):
+    def init(self, render, signal, slot, requestHandle):
         self.Render = render
         self.Signal = signal
         self.Slot = slot
+        self.RequestHandle = requestHandle
+        self.threadCount = 4
+        self.mine = None # My articles and comments
+        self.searching = False

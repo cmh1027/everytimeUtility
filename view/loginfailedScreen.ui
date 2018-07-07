@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Failed</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color:rgb(250, 255, 151)</string>
