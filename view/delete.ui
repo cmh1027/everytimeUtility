@@ -19,10 +19,13 @@
      <x>0</x>
      <y>10</y>
      <width>191</width>
-     <height>207</height>
+     <height>201</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="optionLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
     <property name="topMargin">
      <number>0</number>
     </property>
@@ -93,7 +96,7 @@
          </size>
         </property>
         <property name="text">
-         <string>0</string>
+         <string/>
         </property>
         <property name="maxLength">
          <number>3</number>
@@ -109,23 +112,15 @@
       </item>
      </layout>
     </item>
-    <item row="5" column="1">
-     <widget class="QPushButton" name="cancelButton">
+    <item row="2" column="0">
+     <widget class="QCheckBox" name="commentCheckBox">
       <property name="font">
        <font>
-        <family>맑은 고딕</family>
-        <weight>75</weight>
-        <bold>true</bold>
+        <family>굴림</family>
        </font>
       </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(200, 200, 200)</string>
-      </property>
       <property name="text">
-       <string>중단</string>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
+       <string>댓글 삭제</string>
       </property>
      </widget>
     </item>
@@ -147,36 +142,42 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="0">
-     <widget class="QPushButton" name="deleteButton">
-      <property name="font">
-       <font>
-        <family>맑은 고딕</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
+    <item row="2" column="1">
+     <widget class="QComboBox" name="dateComboBox">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(200, 200, 200)</string>
+      <property name="currentText">
+       <string>모두</string>
       </property>
-      <property name="text">
-       <string>삭제</string>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QCheckBox" name="commentCheckBox">
-      <property name="font">
-       <font>
-        <family>굴림</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>댓글 삭제</string>
-      </property>
+      <item>
+       <property name="text">
+        <string>모두</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1일 내</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1주 내</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1달 내</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>1년 내</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item row="3" column="0" colspan="2">
@@ -237,7 +238,7 @@
          </size>
         </property>
         <property name="text">
-         <string>0</string>
+         <string/>
         </property>
         <property name="maxLength">
          <number>3</number>
@@ -252,65 +253,6 @@
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="2" column="1">
-     <widget class="QComboBox" name="dateComboBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="currentText">
-       <string>모두</string>
-      </property>
-      <item>
-       <property name="text">
-        <string>모두</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1일 내</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1주일 내</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1달 내</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>1년 내</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="exclusionWordButton">
-      <property name="font">
-       <font>
-        <family>맑은 고딕</family>
-        <pointsize>8</pointsize>
-        <weight>50</weight>
-        <bold>false</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(200, 200, 200)</string>
-      </property>
-      <property name="text">
-       <string>특정 단어 제외</string>
-      </property>
-      <property name="flat">
-       <bool>false</bool>
-      </property>
-     </widget>
     </item>
     <item row="0" column="0" colspan="2">
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -373,8 +315,95 @@
       </item>
      </layout>
     </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="excludeWordButton">
+      <property name="font">
+       <font>
+        <family>맑은 고딕</family>
+        <pointsize>8</pointsize>
+        <weight>50</weight>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(200, 200, 200)</string>
+      </property>
+      <property name="text">
+       <string>특정 단어 제외</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1" alignment="Qt::AlignHCenter">
+     <widget class="QPushButton" name="cancelButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>50</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>맑은 고딕</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(200, 200, 200)</string>
+      </property>
+      <property name="text">
+       <string>중단</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" alignment="Qt::AlignHCenter">
+     <widget class="QPushButton" name="deleteButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>50</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>맑은 고딕</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(200, 200, 200)</string>
+      </property>
+      <property name="text">
+       <string>삭제</string>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
+  <zorder>gridLayoutWidget</zorder>
+  <zorder>deleteButton</zorder>
  </widget>
  <resources/>
  <connections/>

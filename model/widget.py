@@ -2,23 +2,47 @@ from PyQt5 import QtWidgets
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import view.messageDialog as messageDialog
 import urllib3
 import requests
 
 class Window(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+        from render import Render
+        from controller import Signal, Slot
+        from requesthandle import RequestHandle
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         with requests.Session() as self.req:
             retry = Retry(connect=4, backoff_factor=0.3)
             adapter = HTTPAdapter(max_retries=retry)
             self.req.mount('https://www.everytime.kr', adapter)
-
-    def init(self, render, signal, slot, requestHandle):
-        self.Render = render
-        self.Signal = signal
-        self.Slot = slot
-        self.RequestHandle = requestHandle
+        self.Render = Render(self)
+        self.Signal = Signal(self)
+        self.Slot = Slot(self)
+        self.RequestHandle = RequestHandle(self)
         self.threadCount = 4
+        self.printIdFlag = False
+        self.printTextFlag = False
+        self.printOriginFlag = False
         self.mine = None # My articles and comments
         self.searching = False
+        self.excludeWord = []
+        self.excludeArticleFlag = False
+        self.excludeCommentFlag = False
+
+class MessageDialog(QtWidgets.QDialog):
+    def __init__(self, parent, title, content):
+        super().__init__(parent)
+        ui = messageDialog.Ui_Dialog()
+        ui.setupUi(self)
+        self.setWindowTitle(title)
+        self.findChild(QtWidgets.QLabel, "messageLabel").setText(content)
+        self.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.close)
+        layoutWidget = self.findChild(QtWidgets.QWidget, "verticalLayoutWidget")
+        layoutWidget.resize(len(content)*13, layoutWidget.height())
+        self.resize(len(content)*13, layoutWidget.height()+5)
+        self.show()
+
+    def close(self):
+        self.deleteLater()

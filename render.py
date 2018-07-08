@@ -1,9 +1,10 @@
-import model.widget as widget
 from PyQt5 import QtWidgets
 from glob import glob
 from os.path import splitext, basename
 from importlib import import_module
 from bs4 import BeautifulSoup
+import model.widget as widget
+
 for module in glob('view/*'):
     name, ext = splitext(module)
     name = basename(name)
@@ -39,21 +40,19 @@ class Render:
         for content in contents:
             content.setParent(None)
 
+    def messageDialog(self, title, content):
+        widget.MessageDialog(self.MainWindow, title, content)
+
+    def addTextEdit(self, string):
+        progressTextEdit = self.MainWindow.findChild(QtWidgets.QTextEdit, "progressTextEdit")
+        text = progressTextEdit.toPlainText()
+        progressTextEdit.setText(text+"\n"+string)     
+
     @window_clear
     def login(self):
         ui = loginScreen.Ui_MainWindow()
         ui.setupUi(self.MainWindow)
         self.MainWindow.Signal.bind("login")
-    
-    @window_clear
-    def loginfailed(self):
-        Dialog = QtWidgets.QDialog(self.MainWindow)
-        Dialog.setModal(True)
-        ui = loginfailedScreen.Ui_Dialog()
-        ui.setupUi(Dialog)
-        Dialog.setObjectName("loginfailedDialog")
-        Dialog.show()
-        self.MainWindow.Signal.bind("loginfailed")
     
     @window_clear
     def home(self, response):
@@ -70,8 +69,11 @@ class Render:
         ui = delete.Ui_Form()
         Form = self.MainWindow.findChild(QtWidgets.QWidget, "Form")
         ui.setupUi(Form)
-        self.MainWindow.findChild(QtWidgets.QLabel, "writeLabel").setText("글 {}개 / 덧글 {}개".format(len(self.MainWindow.mine["article"]), len(self.MainWindow.mine["comment"])))
-        self.MainWindow.Signal.bind("home_delete")
+        if "article" in self.MainWindow.mine and "comment" in self.MainWindow.mine:
+            self.MainWindow.findChild(QtWidgets.QLabel, "writeLabel").setText("글 {}개 / 덧글 {}개".format(len(self.MainWindow.mine["article"]), len(self.MainWindow.mine["comment"])))
+        else:
+            self.MainWindow.findChild(QtWidgets.QLabel, "writeLabel").setText("오류 발생")
+        self.MainWindow.Signal.bind("deleteMenu")
 
     @content_clear
     def config(self):
@@ -79,10 +81,24 @@ class Render:
         Form = self.MainWindow.findChild(QtWidgets.QWidget, "Form")
         ui.setupUi(Form)
         self.MainWindow.findChild(QtWidgets.QLineEdit, "threadcountLineEdit").setText(str(self.MainWindow.threadCount))
-        self.MainWindow.Signal.bind("home_config")
+        self.MainWindow.findChild(QtWidgets.QCheckBox, "printidCheckBox").setChecked(self.MainWindow.printIdFlag)
+        self.MainWindow.findChild(QtWidgets.QCheckBox, "printtextCheckBox").setChecked(self.MainWindow.printTextFlag)
+        self.MainWindow.findChild(QtWidgets.QCheckBox, "printoriginCheckBox").setChecked(self.MainWindow.printOriginFlag)
+        self.MainWindow.Signal.bind("configMenu")
 
     @content_clear
     def loading(self):
         ui = loading.Ui_Form()
         Form = self.MainWindow.findChild(QtWidgets.QWidget, "Form")
         ui.setupUi(Form)
+    
+    def excludeWord(self):
+        Dialog = QtWidgets.QDialog(self.MainWindow)
+        ui = excludeWord.Ui_Dialog()
+        ui.setupUi(Dialog)
+        Dialog.setObjectName("excludeWordDialog")
+        Dialog.show()
+        Dialog.findChild(QtWidgets.QTextEdit, "excludewordTextEdit").setText('\n'.join(self.MainWindow.excludeWord))
+        Dialog.findChild(QtWidgets.QCheckBox, "excludearticleCheckBox").setChecked(self.MainWindow.excludeArticleFlag)
+        Dialog.findChild(QtWidgets.QCheckBox, "excludecommentCheckBox").setChecked(self.MainWindow.excludeCommentFlag)
+        self.MainWindow.Signal.bind("excludeWord", Dialog)

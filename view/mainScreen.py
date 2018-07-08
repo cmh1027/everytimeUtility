@@ -173,10 +173,6 @@ class Ui_MainWindow(object):
         self.Form.setGeometry(QtCore.QRect(140, 0, 191, 223))
         self.Form.setStyleSheet("background-color:rgb(208, 206, 255)")
         self.Form.setObjectName("Form")
-        self.progressTextEdit.raise_()
-        self.verticalLayoutWidget.raise_()
-        self.verticalLayoutWidget_2.raise_()
-        self.Form.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -189,7 +185,7 @@ class Ui_MainWindow(object):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Gulim\'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Welcome to Everytime Utility!</p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:7pt;\">Welcome to Everytime Utility!</span></p></body></html>"))
         self.titleLabel.setText(_translate("MainWindow", "Everytime Utility v.beta"))
         self.deleteButton.setText(_translate("MainWindow", "글/댓글 삭제"))
         self.searchButton.setText(_translate("MainWindow", "고정닉 검색"))

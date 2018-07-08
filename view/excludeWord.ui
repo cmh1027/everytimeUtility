@@ -11,10 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>exclude</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(255, 255, 157);</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -64,7 +67,7 @@
      <height>22</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="exclusionarticleLayout">
+   <layout class="QHBoxLayout" name="excludearticleLayout">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -72,7 +75,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QCheckBox" name="exclusionarticleCheckBox">
+     <widget class="QCheckBox" name="excludearticleCheckBox">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -108,7 +111,7 @@
      <height>22</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="exclusioncommentLayout">
+   <layout class="QHBoxLayout" name="excludecommentLayout">
     <property name="leftMargin">
      <number>0</number>
     </property>
@@ -116,7 +119,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QCheckBox" name="exclusioncommentCheckBox">
+     <widget class="QCheckBox" name="excludecommentCheckBox">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -143,7 +146,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QTextEdit" name="exclusionwordTextEdit">
+  <widget class="QTextEdit" name="excludewordTextEdit">
    <property name="geometry">
     <rect>
      <x>10</x>
