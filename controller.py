@@ -6,9 +6,9 @@ class Slot(QObject):
     deleteEndSignal = pyqtSignal()
     addProgressSignal = pyqtSignal(str)
 
-    def __init__(self, Mainwindow):
+    def __init__(self, MainWindow):
         super().__init__()
-        self.MainWindow = Mainwindow
+        self.MainWindow = MainWindow
         self.searchEndSignal.connect(self.searchEnd)
         self.deleteEndSignal.connect(self.deleteEnd)
         self.addProgressSignal.connect(self.addProgress)
@@ -17,6 +17,10 @@ class Slot(QObject):
     def addProgress(self, string):
         self.MainWindow.Render.addTextEdit(string)
     
+    @pyqtSlot()
+    def eraseProgress(self):
+        self.MainWindow.Render.eraseTextEdit()
+
     @pyqtSlot()
     def login(self):
         _id = self.MainWindow.findChild(QtWidgets.QLineEdit, "idLineEdit").text()
@@ -51,6 +55,9 @@ class Slot(QObject):
     @pyqtSlot()
     def deleteEnd(self):
         self.MainWindow.Render.addTextEdit("[System] 삭제 완료")
+        self.MainWindow.deleting = False
+        btn = self.MainWindow.findChild(QtWidgets.QPushButton, "deleteButton")
+        self.MainWindow.Render.enableButton(btn)
         self.mineRefresh()
 
     @pyqtSlot()
@@ -80,9 +87,12 @@ class Slot(QObject):
         self.MainWindow.printIdFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "printidCheckBox").isChecked()
         self.MainWindow.printTextFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "printtextCheckBox").isChecked()
         self.MainWindow.printOriginFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "printoriginCheckBox").isChecked()
-    
+        self.MainWindow.Render.messageDialog("save", "저장되었습니다")
+
     @pyqtSlot()
     def startDelete(self):
+        btn = self.MainWindow.findChild(QtWidgets.QPushButton, "deleteButton")
+        self.MainWindow.Render.disableButton(btn)
         articleFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "articleCheckBox").isChecked()
         commentFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "commentCheckBox").isChecked()
         minlikeFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "minlikeCheckBox").isChecked()
@@ -110,16 +120,18 @@ class Slot(QObject):
         option["excludeWord"] = self.MainWindow.excludeWord
         option["excludeArticleFlag"] = self.MainWindow.excludeArticleFlag
         option["excludeCommentFlag"] = self.MainWindow.excludeCommentFlag
+        self.MainWindow.deleting = True
         self.MainWindow.Render.addTextEdit("[System] 삭제를 시작합니다")
         self.MainWindow.RequestHandle.deleteMine(option)
 
     @pyqtSlot()
     def cancelDelete(self):
-        deleting = self.MainWindow.RequestHandle.abortDelete()
-        if deleting is True:
+        if self.MainWindow.deleting:
+            self.MainWindow.RequestHandle.abortDelete()
+            self.MainWindow.deleting = False
             self.MainWindow.Render.addTextEdit("[System] 삭제가 중지되었습니다")
             self.mineRefresh()
-    
+
     @pyqtSlot()
     def excludeWord(self):
         self.MainWindow.Render.excludeWord()
@@ -153,7 +165,8 @@ class Signal:
         self.MainWindow.findChild(QtWidgets.QToolButton, "plasterButton").clicked.connect(self.MainWindow.Slot.plasterMenu)
         self.MainWindow.findChild(QtWidgets.QToolButton, "searchButton").clicked.connect(self.MainWindow.Slot.searchMenu)
         self.MainWindow.findChild(QtWidgets.QToolButton, "configButton").clicked.connect(self.MainWindow.Slot.configMenu)
-
+        self.MainWindow.findChild(QtWidgets.QPushButton, "eraseButton").clicked.connect(self.MainWindow.Slot.eraseProgress)
+    
     def deleteMenu(self):
         self.MainWindow.findChild(QtWidgets.QPushButton, "deleteButton").clicked.connect(self.MainWindow.Slot.startDelete)
         self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.cancelDelete)

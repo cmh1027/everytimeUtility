@@ -43,10 +43,20 @@ class Render:
     def messageDialog(self, title, content):
         widget.MessageDialog(self.MainWindow, title, content)
 
+    def eraseTextEdit(self):
+        progressTextEdit = self.MainWindow.findChild(QtWidgets.QTextEdit, "progressTextEdit")
+        progressTextEdit.setText("")
+
     def addTextEdit(self, string):
         progressTextEdit = self.MainWindow.findChild(QtWidgets.QTextEdit, "progressTextEdit")
         text = progressTextEdit.toPlainText()
-        progressTextEdit.setText(text+"\n"+string)     
+        progressTextEdit.setText(text+string+"\n")
+    
+    def disableButton(self, button):
+        button.setEnabled(False)
+
+    def enableButton(self, button):
+        button.setEnabled(True)
 
     @window_clear
     def login(self):
@@ -73,6 +83,9 @@ class Render:
             self.MainWindow.findChild(QtWidgets.QLabel, "writeLabel").setText("글 {}개 / 덧글 {}개".format(len(self.MainWindow.mine["article"]), len(self.MainWindow.mine["comment"])))
         else:
             self.MainWindow.findChild(QtWidgets.QLabel, "writeLabel").setText("오류 발생")
+        btn = self.MainWindow.findChild(QtWidgets.QPushButton, "deleteButton")
+        if self.MainWindow.deleting:
+            self.MainWindow.Render.disableButton(btn)
         self.MainWindow.Signal.bind("deleteMenu")
 
     @content_clear

@@ -27,6 +27,7 @@ class Window(QtWidgets.QMainWindow):
         self.printOriginFlag = False
         self.mine = None # My articles and comments
         self.searching = False
+        self.deleting = False
         self.excludeWord = []
         self.excludeArticleFlag = False
         self.excludeCommentFlag = False
@@ -40,8 +41,8 @@ class MessageDialog(QtWidgets.QDialog):
         self.findChild(QtWidgets.QLabel, "messageLabel").setText(content)
         self.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.close)
         layoutWidget = self.findChild(QtWidgets.QWidget, "verticalLayoutWidget")
-        layoutWidget.resize(len(content)*13, layoutWidget.height())
         self.resize(len(content)*13, layoutWidget.height()+5)
+        layoutWidget.setFixedWidth(self.width())
         self.show()
 
     def close(self):
