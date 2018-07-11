@@ -11,9 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(191, 223)
+        Form.resize(231, 223)
         self.verticalLayoutWidget = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 170, 191, 25))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(20, 170, 191, 25))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(55, 0, 55, 0)
@@ -29,7 +29,7 @@ class Ui_Form(object):
         self.saveButton.setObjectName("saveButton")
         self.verticalLayout.addWidget(self.saveButton)
         self.verticalLayoutWidget_2 = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(0, 10, 189, 111))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(20, 10, 189, 111))
         self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -109,7 +109,7 @@ class Ui_Form(object):
         self.label_4.setText(_translate("Form", "[ 글/댓글 삭제 ]"))
         self.printidCheckBox.setText(_translate("Form", "ID 출력"))
         self.printtextCheckBox.setText(_translate("Form", "제목 출력"))
-        self.printoriginCheckBox.setText(_translate("Form", "(댓글) 원본 글 출력"))
+        self.printoriginCheckBox.setText(_translate("Form", "(댓글) 원본 글 주소 출력"))
 
 
 if __name__ == "__main__":

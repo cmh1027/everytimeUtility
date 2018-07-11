@@ -11,19 +11,19 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(331, 376)
+        MainWindow.resize(371, 376)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
-        MainWindow.setMinimumSize(QtCore.QSize(331, 376))
-        MainWindow.setMaximumSize(QtCore.QSize(331, 377))
+        MainWindow.setMinimumSize(QtCore.QSize(371, 376))
+        MainWindow.setMaximumSize(QtCore.QSize(371, 377))
         MainWindow.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(255, 178, 102, 255), stop:0.55 rgba(235, 148, 61, 255), stop:0.98 rgba(0, 0, 0, 255), stop:1 rgba(0, 0, 0, 0))")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.progressTextEdit = QtWidgets.QTextEdit(self.centralwidget)
-        self.progressTextEdit.setGeometry(QtCore.QRect(0, 247, 331, 129))
+        self.progressTextEdit.setGeometry(QtCore.QRect(0, 247, 371, 129))
         self.progressTextEdit.setMaximumSize(QtCore.QSize(16777205, 16777215))
         font = QtGui.QFont()
         font.setFamily("맑은 고딕")
@@ -174,11 +174,11 @@ class Ui_MainWindow(object):
         self.configButton.setObjectName("configButton")
         self.menuLayout.addWidget(self.configButton)
         self.Form = QtWidgets.QWidget(self.centralwidget)
-        self.Form.setGeometry(QtCore.QRect(140, 0, 191, 223))
+        self.Form.setGeometry(QtCore.QRect(140, 0, 231, 223))
         self.Form.setStyleSheet("background-color:rgb(208, 206, 255)")
         self.Form.setObjectName("Form")
         self.eraseButton = QtWidgets.QPushButton(self.centralwidget)
-        self.eraseButton.setGeometry(QtCore.QRect(256, 223, 75, 24))
+        self.eraseButton.setGeometry(QtCore.QRect(300, 223, 75, 24))
         self.eraseButton.setStyleSheet("background-color: rgb(182, 182, 182);")
         self.eraseButton.setObjectName("eraseButton")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -201,14 +201,4 @@ class Ui_MainWindow(object):
         self.plasterButton.setText(_translate("MainWindow", "도배"))
         self.configButton.setText(_translate("MainWindow", "설정"))
         self.eraseButton.setText(_translate("MainWindow", "지우기"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
 

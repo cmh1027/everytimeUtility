@@ -21,16 +21,30 @@ class Window(QtWidgets.QMainWindow):
         self.Signal = Signal(self)
         self.Slot = Slot(self)
         self.RequestHandle = RequestHandle(self)
+        self.initialize()
+    
+    def initialize(self):
+        self.currentMenu = None
+        self.boards = None
         self.threadCount = 4
+
+        self.mine = None # My articles and comments
         self.printIdFlag = False
         self.printTextFlag = False
         self.printOriginFlag = False
-        self.mine = None # My articles and comments
-        self.searching = False
-        self.deleting = False
         self.excludeWord = []
         self.excludeArticleFlag = False
         self.excludeCommentFlag = False
+        self.searchingMine = False
+        self.deleting = False
+
+        self.others = {} # Articles and comments of others
+        self.selectedBoards = {}
+        self.searchPage = 0
+        self.nickname = ""
+        self.articleCheckFlag = False
+        self.commentCheckFlag = False
+        self.searchingOthers = False
 
 class MessageDialog(QtWidgets.QDialog):
     def __init__(self, parent, title, content):

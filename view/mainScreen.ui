@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
+    <width>371</width>
     <height>376</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>331</width>
+    <width>371</width>
     <height>376</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>331</width>
+    <width>371</width>
     <height>377</height>
    </size>
   </property>
@@ -40,7 +40,7 @@
      <rect>
       <x>0</x>
       <y>247</y>
-      <width>331</width>
+      <width>371</width>
       <height>129</height>
      </rect>
     </property>
@@ -323,7 +323,7 @@ background-color:rgb(156, 226, 255)</string>
      <rect>
       <x>140</x>
       <y>0</y>
-      <width>191</width>
+      <width>231</width>
       <height>223</height>
      </rect>
     </property>
@@ -334,7 +334,7 @@ background-color:rgb(156, 226, 255)</string>
    <widget class="QPushButton" name="eraseButton">
     <property name="geometry">
      <rect>
-      <x>256</x>
+      <x>300</x>
       <y>223</y>
       <width>75</width>
       <height>24</height>

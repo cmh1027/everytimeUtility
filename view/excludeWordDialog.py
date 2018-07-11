@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'excludeWord.ui'
+# Form implementation generated from reading ui file 'excludeWordDialog.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.2
 #
@@ -51,8 +51,12 @@ class Ui_Dialog(object):
         self.label_2.setSizePolicy(sizePolicy)
         self.label_2.setObjectName("label_2")
         self.excludearticleLayout.addWidget(self.label_2)
+        self.excludewordTextEdit = QtWidgets.QTextEdit(Dialog)
+        self.excludewordTextEdit.setGeometry(QtCore.QRect(10, 30, 211, 121))
+        self.excludewordTextEdit.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.excludewordTextEdit.setObjectName("excludewordTextEdit")
         self.layoutWidget_2 = QtWidgets.QWidget(Dialog)
-        self.layoutWidget_2.setGeometry(QtCore.QRect(10, 170, 201, 22))
+        self.layoutWidget_2.setGeometry(QtCore.QRect(10, 170, 211, 22))
         self.layoutWidget_2.setObjectName("layoutWidget_2")
         self.excludecommentLayout = QtWidgets.QHBoxLayout(self.layoutWidget_2)
         self.excludecommentLayout.setContentsMargins(0, 0, 0, 0)
@@ -74,10 +78,6 @@ class Ui_Dialog(object):
         self.label_3.setSizePolicy(sizePolicy)
         self.label_3.setObjectName("label_3")
         self.excludecommentLayout.addWidget(self.label_3)
-        self.excludewordTextEdit = QtWidgets.QTextEdit(Dialog)
-        self.excludewordTextEdit.setGeometry(QtCore.QRect(10, 30, 211, 121))
-        self.excludewordTextEdit.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.excludewordTextEdit.setObjectName("excludewordTextEdit")
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.accept)
@@ -89,7 +89,7 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "exclude"))
         self.label.setText(_translate("Dialog", "각 단어는 엔터로 구분"))
         self.label_2.setText(_translate("Dialog", "해당 단어가 포함된 게시글을 제외"))
-        self.label_3.setText(_translate("Dialog", "해당 단어가 포함된 댓글을 제외"))
+        self.label_3.setText(_translate("Dialog", "해당 단어가 포함된 댓글을 제외   "))
 
 
 if __name__ == "__main__":

@@ -18,7 +18,7 @@ class CustomThread(QThread):
 class RequestHandle:
     def __init__(self, MainWindow):
         self.MainWindow = MainWindow
-        self.threads = {"search":{}, "delete":{}} 
+        self.threads = {"searchMine":{}, "delete":{}, "searchOthers":{}} 
     
     def threadFinished(self, thread, prop):
         self.threads[prop].pop(thread)
@@ -43,7 +43,16 @@ class RequestHandle:
             return False
         else:
             return response.text
-        
+    
+    def extractBoards(self, response):
+        result = {}
+        soup = BeautifulSoup(response, 'html.parser')
+        boards = soup.find("div", {"id":"submenu"}).findAll("a", class_=lambda x: x!="search")
+        for board in boards:
+            result[board.getText()] = board["href"].replace("/", "")
+        return result
+            
+
     def searchMyArticles(self, number, articleList, threadCount):
         mult = 0
         while True:
@@ -67,7 +76,7 @@ class RequestHandle:
             result = self.searchComment(commentedList[index])
             commentList.extend(result)
     
-    def searchComment(self, article):
+    def searchComment(self, article, nickname=None):
         data = {"id":article["id"], "limit_num":-1, "moiminfo":True}
         header = {
             "Accept": "text/html, application/xhtml+xml, image/jxr, */*",
@@ -82,9 +91,16 @@ class RequestHandle:
         header["Content-Length"] = str(len("id={}&limit_num=-1&moiminfo=true".format(article["id"])))
         response = self.MainWindow.req.post("https://www.everytime.kr/find/board/comment/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
-        return list(map(lambda comment:{"article":article, "comment":comment, "board":article["board_id"]}, soup.findAll("comment", {"is_mine":"1"})))
+        if nickname is None:
+            result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"is_mine":"1"})))
+        else:
+            result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"user_nickname":nickname})))
+        if "board_id" in article:
+            for comment in result:
+                comment["board"] = article["board_id"]
+        return result
 
-    def searchArticle(self, _id, page):
+    def searchArticle(self, _id, page, nickname=None):
         data = {"id":_id, "limit_num":20, "start_num":page*20}
         header = {
             "Accept": "text/html, application/xhtml+xml, image/jxr, */*",
@@ -99,16 +115,19 @@ class RequestHandle:
         header["Content-Length"] = str(len("id={}&limit_num=20&start_num={}".format(_id, page*20)))
         response = self.MainWindow.req.post("https://www.everytime.kr/find/board/article/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
-        return soup.findAll("article")
+        if nickname is None:
+            return soup.findAll("article")
+        else:
+            return list(map(lambda article:{"board":_id, "article":article}, soup.findAll("article", {"user_nickname":nickname})))
     
     def getMineTarget(self, threadCount):
         def threadedSearchMyArticles(articles):
             number = 0
             threads = []
             while number < threadCount:
-                thread = CustomThread(self.searchMyArticles, self.threadFinished, "search", (number, articles, threadCount))
+                thread = CustomThread(self.searchMyArticles, self.threadFinished, "searchMine", (number, articles, threadCount))
                 threads.append(thread)
-                self.threads["search"][thread] = thread
+                self.threads["searchMine"][thread] = thread
                 number = number+1
             for thread in threads:
                 thread.start()
@@ -118,9 +137,9 @@ class RequestHandle:
             number = 0
             threads = []
             while number < threadCount:
-                thread = CustomThread(self.searchCommentedArticles, self.threadFinished, "search", (number, commentedArticles, threadCount))
+                thread = CustomThread(self.searchCommentedArticles, self.threadFinished, "searchMine", (number, commentedArticles, threadCount))
                 threads.append(thread)
-                self.threads["search"][thread] = thread
+                self.threads["searchMine"][thread] = thread
                 number = number+1
             for thread in threads:
                 thread.start()
@@ -130,9 +149,9 @@ class RequestHandle:
             number = 0
             threads = []
             while number < threadCount:
-                thread = CustomThread(self.searchMyComments, self.threadFinished, "search", (number, commentedArticles, comments, threadCount))
+                thread = CustomThread(self.searchMyComments, self.threadFinished, "searchMine", (number, commentedArticles, comments, threadCount))
                 threads.append(thread)
-                self.threads["search"][thread] = thread
+                self.threads["searchMine"][thread] = thread
                 number = number+1
             for thread in threads:
                 thread.start()
@@ -148,11 +167,11 @@ class RequestHandle:
         # sorted(articles, key=lambda article:article["id"], reverse=True)
         # sorted(comments, key=lambda comment:comment["id"], reverse=True)
         self.MainWindow.mine = {"article":articles, "comment":comments}
-        self.MainWindow.Slot.searchEndSignal.emit()
+        self.MainWindow.Slot.searchMineEndSignal.emit()
     
     def getMine(self):
-        thread = CustomThread(self.getMineTarget, self.threadFinished, "search", (self.MainWindow.threadCount))
-        self.threads["search"][thread] = thread
+        thread = CustomThread(self.getMineTarget, self.threadFinished, "searchMine", (self.MainWindow.threadCount))
+        self.threads["searchMine"][thread] = thread
         thread.start()
     
     def deleteMyArticles(self, articles):
@@ -255,6 +274,46 @@ class RequestHandle:
         else:
             return False
 
+    def searchOthersArticlesAndComments(self, boardId, number, others, threadCount, option):
+        mult = 0
+        while mult*threadCount + number < option["page"]:
+            articles = self.searchArticle(boardId, mult*threadCount + number, option["nickname"])
+            if option["articleFlag"]:
+                others["article"].extend(articles)
+            if option["commentFlag"]:
+                for article in articles:
+                    comments = self.searchComment(article["article"], option["nickname"])
+                    for comment in comments:
+                        comment["board"] = boardId
+                    others["comment"].extend(comments)
+            mult = mult+1
+
+
+    def searchOthersTarget(self, threadCount, option):
+        def threadedSearch(boardId, others):
+            number = 0
+            threads = []
+            while number < threadCount:
+                thread = CustomThread(self.searchOthersArticlesAndComments, self.threadFinished, "searchOthers", (boardId, number, others, threadCount, option))
+                threads.append(thread)
+                self.threads["searchOthers"][thread] = thread
+                number = number+1
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.wait()
+        if option["articleFlag"]:
+            self.MainWindow.others["article"] = []
+        if option["commentFlag"]:
+            self.MainWindow.others["comment"] = []
+        for boardId in option["boards"].values():
+            threadedSearch(boardId, self.MainWindow.others)
+        self.MainWindow.Slot.searchOthersEndSignal.emit()
+    def searchOthers(self, option):
+        thread = CustomThread(self.searchOthersTarget, self.threadFinished, "searchOthers", (self.MainWindow.threadCount, option))
+        self.threads["searchOthers"][thread] = thread
+        thread.start()
+
 class Util:
     @staticmethod
     def filterMine(mine, option):
@@ -264,7 +323,7 @@ class Util:
             if option["mincommentFlag"]:
                 articles = list(filter(lambda article:article["comment"] < option["minlike"], articles))
             if option["excludeArticleFlag"]:
-                articles = list(filter(lambda article:Util.checkIfWordIn(article, option["excludeWord"]), articles))
+                articles = list(filter(lambda article:not Util.checkIfWordIn(article, option["excludeWord"]), articles))
             if option["scope"] == "1일 내":
                 articles = list(filter(lambda article:Util.checkDate(now, article["created_at"], 1), articles))
             elif option["scope"] == "1주 내":
@@ -276,7 +335,7 @@ class Util:
             return articles
         def filterComment(comments):
             if option["excludeCommentFlag"]:
-                comments = list(filter(lambda item:Util.checkIfWordIn(item["comment"], option["excludeWord"]), comments))
+                comments = list(filter(lambda item:not Util.checkIfWordIn(item["comment"], option["excludeWord"]), comments))
             if option["scope"] == "1일 내":
                 comments = list(filter(lambda item:Util.checkDate(now, item["comment"]["created_at"], 1), comments))
             elif option["scope"] == "1주 내":
@@ -308,11 +367,16 @@ class Util:
             return False
 
     @staticmethod
-    def checkIfWordIn(text, words):
-        for word in words:
-            if text.find(word) != -1:
-                return False
-        return True
+    def checkIfWordIn(tag, words):
+        if tag.name == "article":
+            for word in words:
+                if tag["title"].find(word) != -1 or tag["text"].find(word) != -1:
+                    return True
+        elif tag.name == "comment":
+            for word in words:
+                if tag["text"].find(word) != -1:
+                    return True
+        return False
     
     @staticmethod
     def omitString(string):
