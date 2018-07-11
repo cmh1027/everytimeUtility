@@ -44,7 +44,7 @@ class OthersDetail(object):
                 item = QtWidgets.QTableWidgetItem(comment["comment"]["text"])
                 commentTableWidget.setItem(row, 0, item)
                 if comment["article"]["title"] == "":
-                    item = QtWidgets.QTableWidgetItem(comment["article"]["text"])
+                    item = QtWidgets.QTableWidgetItem(comment["article"]["text"].replace("<br />", " "))
                 else:
                     item = QtWidgets.QTableWidgetItem(comment["article"]["title"])
                 commentTableWidget.setItem(row, 1, item)
@@ -102,7 +102,7 @@ class MineDetail(object):
                 item = QtWidgets.QTableWidgetItem(comment["comment"]["text"])
                 commentTableWidget.setItem(row, 0, item)
                 if comment["article"]["title"] == "":
-                    item = QtWidgets.QTableWidgetItem(comment["article"]["text"])
+                    item = QtWidgets.QTableWidgetItem(comment["article"]["text"].replace("<br />", " "))
                 else:
                     item = QtWidgets.QTableWidgetItem(comment["article"]["title"])
                 commentTableWidget.setItem(row, 1, item)

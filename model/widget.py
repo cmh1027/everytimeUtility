@@ -29,15 +29,16 @@ class Window(QtWidgets.QMainWindow):
         self.threadCount = 4
 
         self.mine = None # My articles and comments
-        self.printIdFlag = False
-        self.printTextFlag = False
-        self.printOriginFlag = False
+        self.printIdFlag = True
+        self.printTextFlag = True
+        self.printOriginFlag = True
         self.excludeWord = []
         self.excludeArticleFlag = False
         self.excludeCommentFlag = False
         self.searchingMine = False
         self.deleting = False
 
+        self.printBoardSearchEndFlag = True
         self.others = {} # Articles and comments of others
         self.selectedBoards = {}
         self.searchPage = 0

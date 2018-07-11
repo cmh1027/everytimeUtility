@@ -106,6 +106,7 @@ class Render:
         self.MainWindow.findChild(QtWidgets.QCheckBox, "printidCheckBox").setChecked(self.MainWindow.printIdFlag)
         self.MainWindow.findChild(QtWidgets.QCheckBox, "printtextCheckBox").setChecked(self.MainWindow.printTextFlag)
         self.MainWindow.findChild(QtWidgets.QCheckBox, "printoriginCheckBox").setChecked(self.MainWindow.printOriginFlag)
+        self.MainWindow.findChild(QtWidgets.QCheckBox, "printboardsearchendCheckBox").setChecked(self.MainWindow.printBoardSearchEndFlag)
         self.MainWindow.Signal.bind("configMenu")
 
     @content_clear
@@ -123,12 +124,13 @@ class Render:
         self.MainWindow.findChild(QtWidgets.QLineEdit, "nicknameLineEdit").setText(self.MainWindow.nickname)
         self.MainWindow.findChild(QtWidgets.QCheckBox, "articleCheckBox").setChecked(self.MainWindow.articleCheckFlag)
         self.MainWindow.findChild(QtWidgets.QCheckBox, "commentCheckBox").setChecked(self.MainWindow.commentCheckFlag)
-        if "article" in self.MainWindow.others and "comment" in self.MainWindow.others:
-            self.MainWindow.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개 / 댓글 {}개".format(len(self.MainWindow.others["article"]), len(self.MainWindow.others["comment"])))
-        elif "article" in self.MainWindow.others and "comment" not in self.MainWindow.others:
-            self.MainWindow.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개".format(len(self.MainWindow.others["article"])))
-        elif "article" not in self.MainWindow.others and "comment" in self.MainWindow.others:
-            self.MainWindow.findChild(QtWidgets.QLabel, "infoLabel").setText("댓글 {}개".format(len(self.MainWindow.others["comment"])))
+        if not self.MainWindow.searchingOthers:
+            if "article" in self.MainWindow.others and "comment" in self.MainWindow.others:
+                self.MainWindow.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개 / 댓글 {}개".format(len(self.MainWindow.others["article"]), len(self.MainWindow.others["comment"])))
+            elif "article" in self.MainWindow.others and "comment" not in self.MainWindow.others:
+                self.MainWindow.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개".format(len(self.MainWindow.others["article"])))
+            elif "article" not in self.MainWindow.others and "comment" in self.MainWindow.others:
+                self.MainWindow.findChild(QtWidgets.QLabel, "infoLabel").setText("댓글 {}개".format(len(self.MainWindow.others["comment"])))
         if self.MainWindow.searchingOthers:
             btn = self.MainWindow.findChild(QtWidgets.QPushButton, "searchButton")
             self.disableButton(btn, "검색중")

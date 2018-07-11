@@ -21,7 +21,8 @@ class RequestHandle:
         self.threads = {"searchMine":{}, "delete":{}, "searchOthers":{}} 
     
     def threadFinished(self, thread, prop):
-        self.threads[prop].pop(thread)
+        if thread in self.threads[prop]:
+            self.threads[prop].pop(thread)
 
     def login(self, _id, password):
         data = {"redirect":"/"}
@@ -100,7 +101,7 @@ class RequestHandle:
                 comment["board"] = article["board_id"]
         return result
 
-    def searchArticle(self, _id, page, nickname=None):
+    def searchArticle(self, _id, page):
         data = {"id":_id, "limit_num":20, "start_num":page*20}
         header = {
             "Accept": "text/html, application/xhtml+xml, image/jxr, */*",
@@ -115,10 +116,10 @@ class RequestHandle:
         header["Content-Length"] = str(len("id={}&limit_num=20&start_num={}".format(_id, page*20)))
         response = self.MainWindow.req.post("https://www.everytime.kr/find/board/article/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
-        if nickname is None:
+        if _id == "myarticle" or _id == "mycommentarticle":
             return soup.findAll("article")
         else:
-            return list(map(lambda article:{"board":_id, "article":article}, soup.findAll("article", {"user_nickname":nickname})))
+            return list(map(lambda article:{"board":_id, "article":article}, soup.findAll("article")))
     
     def getMineTarget(self, threadCount):
         def threadedSearchMyArticles(articles):
@@ -267,7 +268,7 @@ class RequestHandle:
     
     def abortDelete(self):
         if len(self.threads["delete"]) > 0:
-            for thread in self.threads["delete"]:
+            for thread in list(self.threads["delete"]):
                 thread.terminate()
                 self.threadFinished(thread, "delete")
             return True
@@ -277,17 +278,17 @@ class RequestHandle:
     def searchOthersArticlesAndComments(self, boardId, number, others, threadCount, option):
         mult = 0
         while mult*threadCount + number < option["page"]:
-            articles = self.searchArticle(boardId, mult*threadCount + number, option["nickname"])
-            if option["articleFlag"]:
-                others["article"].extend(articles)
+            articles = self.searchArticle(boardId, mult*threadCount + number)
             if option["commentFlag"]:
                 for article in articles:
                     comments = self.searchComment(article["article"], option["nickname"])
                     for comment in comments:
                         comment["board"] = boardId
                     others["comment"].extend(comments)
+            articles = list(filter(lambda article:article["article"]["user_nickname"] == option["nickname"], articles))
+            if option["articleFlag"]:
+                others["article"].extend(articles)
             mult = mult+1
-
 
     def searchOthersTarget(self, threadCount, option):
         def threadedSearch(boardId, others):
@@ -306,13 +307,25 @@ class RequestHandle:
             self.MainWindow.others["article"] = []
         if option["commentFlag"]:
             self.MainWindow.others["comment"] = []
-        for boardId in option["boards"].values():
+        for board, boardId in option["boards"].items():
             threadedSearch(boardId, self.MainWindow.others)
+            if self.MainWindow.printBoardSearchEndFlag:
+                self.MainWindow.Slot.addProgressSignal.emit("[System] {} 검색 완료".format(board))
         self.MainWindow.Slot.searchOthersEndSignal.emit()
+
     def searchOthers(self, option):
         thread = CustomThread(self.searchOthersTarget, self.threadFinished, "searchOthers", (self.MainWindow.threadCount, option))
         self.threads["searchOthers"][thread] = thread
         thread.start()
+
+    def abortSearch(self):
+        if len(self.threads["searchOthers"]) > 0:
+            for thread in list(self.threads["searchOthers"]):
+                thread.terminate()
+                self.threadFinished(thread, "searchOthers")
+            return True
+        else:
+            return False
 
 class Util:
     @staticmethod

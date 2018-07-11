@@ -132,7 +132,7 @@ class Slot(QObject):
         self.MainWindow.RequestHandle.deleteMine(option)
 
     @pyqtSlot()
-    def cancelDelete(self):
+    def abortDelete(self):
         if self.MainWindow.deleting:
             self.MainWindow.RequestHandle.abortDelete()
             self.MainWindow.deleting = False
@@ -191,7 +191,7 @@ class Slot(QObject):
         self.MainWindow.RequestHandle.searchOthers(option)
 
     @pyqtSlot()
-    def cancelSearch(self):
+    def abortSearch(self):
         if self.MainWindow.searchingOthers:
             self.MainWindow.RequestHandle.abortSearch()
             self.MainWindow.searchingOthers = False
@@ -236,7 +236,7 @@ class Signal:
     
     def deleteMenu(self):
         self.MainWindow.findChild(QtWidgets.QPushButton, "deleteButton").clicked.connect(self.MainWindow.Slot.startDelete)
-        self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.cancelDelete)
+        self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.abortDelete)
         self.MainWindow.findChild(QtWidgets.QPushButton, "refreshButton").clicked.connect(self.MainWindow.Slot.mineRefresh)
         self.MainWindow.findChild(QtWidgets.QPushButton, "detailButton").clicked.connect(self.MainWindow.Slot.mineDetail)
         self.MainWindow.findChild(QtWidgets.QLineEdit, "minlikeLineEdit").setValidator(QtGui.QIntValidator(0, 1000))
@@ -249,7 +249,7 @@ class Signal:
     def searchMenu(self):
         self.MainWindow.findChild(QtWidgets.QPushButton, "selectboardButton").clicked.connect(self.MainWindow.Slot.selectBoard)
         self.MainWindow.findChild(QtWidgets.QPushButton, "searchButton").clicked.connect(self.MainWindow.Slot.startSearch)
-        self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.cancelSearch)
+        self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.abortSearch)
         self.MainWindow.findChild(QtWidgets.QPushButton, "detailButton").clicked.connect(self.MainWindow.Slot.searchedDetail)
         self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").setValidator(QtGui.QIntValidator(0, 9999))
 
