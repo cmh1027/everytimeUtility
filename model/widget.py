@@ -41,10 +41,12 @@ class Window(QtWidgets.QMainWindow):
         self.printBoardSearchEndFlag = True
         self.others = {} # Articles and comments of others
         self.selectedBoards = {}
-        self.searchPage = 0
+        self.searchPage = 1
+        self.searchEndPage = 1
         self.searchNickname = ""
         self.articleCheckFlag = False
         self.commentCheckFlag = False
+        self.searchAllFlag = False
         self.searchingOthers = False
 
         self.plasterBoards = {}
@@ -55,6 +57,7 @@ class Window(QtWidgets.QMainWindow):
         self.promptRemoveFlag = True
         self.isAnonymFlag = True
         self.printPlasterFlag = False
+        self.regurgitateFlag = False
         self.plasterIteration = 1
         self.plasterRetry = 4
         self.plasterInterval = 4

@@ -123,9 +123,15 @@ class Render:
         Form = self.MainWindow.findChild(QtWidgets.QWidget, "Form")
         ui.setupUi(Form)
         self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").setText(str(self.MainWindow.searchPage))
-        self.MainWindow.findChild(QtWidgets.QLineEdit, "nicknameLineEdit").setText(self.MainWindow.searchNickname)
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageEndLineEdit").setText(str(self.MainWindow.searchEndPage))
+        nickname = self.MainWindow.findChild(QtWidgets.QLineEdit, "nicknameLineEdit")
+        nickname.setText(self.MainWindow.searchNickname)
         self.MainWindow.findChild(QtWidgets.QCheckBox, "articleCheckBox").setChecked(self.MainWindow.articleCheckFlag)
         self.MainWindow.findChild(QtWidgets.QCheckBox, "commentCheckBox").setChecked(self.MainWindow.commentCheckFlag)
+        checkbox = self.MainWindow.findChild(QtWidgets.QCheckBox, "allCheckBox")
+        checkbox.setChecked(self.MainWindow.searchAllFlag)
+        checkbox.stateChanged.connect(lambda: nickname.setEnabled(not checkbox.isChecked()))
+        nickname.setEnabled(not checkbox.isChecked())
         if not self.MainWindow.searchingOthers:
             if "article" in self.MainWindow.others and "comment" in self.MainWindow.others:
                 self.MainWindow.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개 / 댓글 {}개".format(len(self.MainWindow.others["article"]), len(self.MainWindow.others["comment"])))
@@ -226,11 +232,14 @@ class Render:
         self.MainWindow.findChild(QtWidgets.QCheckBox, "isanonymFlag").setChecked(self.MainWindow.isAnonymFlag)
         self.MainWindow.findChild(QtWidgets.QLineEdit, "iterationLineEdit").setText(str(self.MainWindow.plasterIteration))
         self.MainWindow.findChild(QtWidgets.QLineEdit, "retryLineEdit").setText(str(self.MainWindow.plasterRetry))
-        if self.MainWindow.searchNickname == "":
-            self.MainWindow.findChild(QtWidgets.QLabel, "searchednicknameLabel").setText("검색되지 않음")
-            self.disableButton(btn, "Go!")
+        if self.MainWindow.searchAllFlag:
+            self.MainWindow.findChild(QtWidgets.QLabel, "searchednicknameLabel").setText("모두")
         else:
-            self.MainWindow.findChild(QtWidgets.QLabel, "searchednicknameLabel").setText(self.MainWindow.searchNickname)
+            if self.MainWindow.searchNickname == "":
+                self.MainWindow.findChild(QtWidgets.QLabel, "searchednicknameLabel").setText("검색되지 않음")
+                self.disableButton(btn, "Go!")
+            else:
+                self.MainWindow.findChild(QtWidgets.QLabel, "searchednicknameLabel").setText(self.MainWindow.searchNickname)
         if self.MainWindow.searchingOthers:
             self.disableButton(btn, "검색중")
         if self.MainWindow.plastering:
@@ -248,7 +257,12 @@ class Render:
         ui = plasterWordDialog.Ui_Dialog()
         ui.setupUi(Dialog)
         Dialog.show()
-        Dialog.findChild(QtWidgets.QTextEdit, "plasterwordTextEdit").setText('\n'.join(self.MainWindow.plasterWord))
+        textEdit = Dialog.findChild(QtWidgets.QTextEdit, "plasterwordTextEdit")
+        textEdit.setText('\n'.join(self.MainWindow.plasterWord))
+        checkbox = Dialog.findChild(QtWidgets.QCheckBox, "regurgitateCheckBox")
+        checkbox.setChecked(self.MainWindow.regurgitateFlag)
+        checkbox.stateChanged.connect(lambda: textEdit.setEnabled(not checkbox.isChecked()))
+        textEdit.setEnabled(not checkbox.isChecked())
         self.MainWindow.Signal.bind("plasterWord", Dialog)
     
     def plasterEndSearch(self):

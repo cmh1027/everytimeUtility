@@ -109,6 +109,8 @@ class RequestHandle:
         soup = BeautifulSoup(response.text, 'html.parser')
         if nickname is None:
             result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"is_mine":"1"})))
+        elif nickname is False:
+            result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll(lambda tag:tag.name=="comment" and tag["id"] != "0")))
         else:
             result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"user_nickname":nickname})))
         if "board_id" in article:
@@ -342,20 +344,26 @@ class RequestHandle:
 
     def searchOthersArticlesAndComments(self, boardId, number, others, threadCount, option):
         mult = 0
-        while mult*threadCount + number < option["page"]:
-            articles = self.searchArticle(boardId, mult*threadCount + number)
+        page = option["page"] - 1 + mult*threadCount + number
+        while page <= option["pageEnd"] - 1:
+            articles = self.searchArticle(boardId, page)
             if option["commentFlag"]:
                 for article in articles:
-                    comments = self.searchComment(article["article"], option["nickname"])
+                    if option["all"]:
+                        comments = self.searchComment(article["article"], False)
+                    else:
+                        comments = self.searchComment(article["article"], option["nickname"])
                     for comment in comments:
                         comment["board"] = boardId
                     others["comment"].extend(comments)
-            articles = list(filter(lambda article:article["article"]["user_nickname"] == option["nickname"], articles))
+            if not option["all"]:
+                articles = list(filter(lambda article:article["article"]["user_nickname"] == option["nickname"], articles))
             if option["articleFlag"]:
                 others["article"].extend(articles)
-            if self.MainWindow.printBoardSearchEndFlag and (mult*threadCount + number) % 10 == 0 and (mult*threadCount + number) > 0 :
-                self.MainWindow.Slot.addProgressSignal.emit("[System] {} 페이지 검색 완료".format(mult*threadCount + number))
+            if self.MainWindow.printBoardSearchEndFlag and (page) % 10 == 0 and (page) > 0 :
+                self.MainWindow.Slot.addProgressSignal.emit("[System] {} 페이지 검색 완료".format(page))
             mult = mult+1
+            page = option["page"] - 1 + mult*threadCount + number
 
     def searchOthersTarget(self, threadCount, option):
         def threadedSearch(boardId, others):

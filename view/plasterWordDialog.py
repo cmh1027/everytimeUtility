@@ -29,9 +29,20 @@ class Ui_Dialog(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
         self.plasterwordTextEdit = QtWidgets.QTextEdit(Dialog)
-        self.plasterwordTextEdit.setGeometry(QtCore.QRect(10, 30, 211, 151))
+        self.plasterwordTextEdit.setGeometry(QtCore.QRect(10, 30, 211, 141))
         self.plasterwordTextEdit.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.plasterwordTextEdit.setObjectName("plasterwordTextEdit")
+        self.regurgitateCheckBox = QtWidgets.QCheckBox(Dialog)
+        self.regurgitateCheckBox.setGeometry(QtCore.QRect(14, 174, 59, 16))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.regurgitateCheckBox.sizePolicy().hasHeightForWidth())
+        self.regurgitateCheckBox.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setFamily("굴림")
+        self.regurgitateCheckBox.setFont(font)
+        self.regurgitateCheckBox.setObjectName("regurgitateCheckBox")
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.accept)
@@ -42,6 +53,7 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "exclude"))
         self.label.setText(_translate("Dialog", "각 단어&문장은 엔터로 구분"))
+        self.regurgitateCheckBox.setText(_translate("Dialog", "역류"))
 
 
 if __name__ == "__main__":

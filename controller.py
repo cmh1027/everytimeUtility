@@ -186,9 +186,11 @@ class Slot(QObject):
     @pyqtSlot()
     def startSearch(self):
         searchPage = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").text())
+        searchEndPage = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageEndLineEdit").text())
         searchNickname = self.MainWindow.findChild(QtWidgets.QLineEdit, "nicknameLineEdit").text()
         articleCheckFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "articleCheckBox").isChecked()
         commentCheckFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "commentCheckBox").isChecked()
+        searchAllFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "allCheckBox").isChecked()
         if not articleCheckFlag and not commentCheckFlag:
             self.MainWindow.Render.messageDialog("error", "글 혹은 댓글 검색 중 적어도 하나를 체크해주세요")
             return
@@ -196,15 +198,20 @@ class Slot(QObject):
             self.MainWindow.Render.messageDialog("error", "적어도 하나의 게시판을 체크해주세요")
             return
         if searchPage == 0:
-            self.MainWindow.Render.messageDialog("error", "페이지 수는 1 이상이어야 합니다")
+            self.MainWindow.Render.messageDialog("error", "시작 페이지는 1페이지 이상이어야 합니다")
             return
-        if searchNickname == "":
+        if searchPage > searchEndPage:
+            self.MainWindow.Render.messageDialog("error", "페이지 설정이 잘못되었습니다")
+            return
+        if searchNickname == "" and not searchAllFlag:
             self.MainWindow.Render.messageDialog("error", "닉네임을 입력해주세요")
             return
         self.MainWindow.searchPage = searchPage
+        self.MainWindow.searchEndPage = searchEndPage
         self.MainWindow.searchNickname = searchNickname
         self.MainWindow.articleCheckFlag = articleCheckFlag
         self.MainWindow.commentCheckFlag = commentCheckFlag
+        self.MainWindow.searchAllFlag = searchAllFlag
         self.MainWindow.others = {}
         btn = self.MainWindow.findChild(QtWidgets.QPushButton, "searchButton")
         self.MainWindow.Render.disableButton(btn, "검색중")
@@ -213,9 +220,11 @@ class Slot(QObject):
         option = {}
         option["boards"] = self.MainWindow.selectedBoards
         option["page"] = searchPage
+        option["pageEnd"] = searchEndPage
         option["nickname"] = searchNickname
         option["articleFlag"] = articleCheckFlag
         option["commentFlag"] = commentCheckFlag
+        option["all"] = searchAllFlag
         self.MainWindow.RequestHandle.searchOthers(option)
 
     @pyqtSlot()
@@ -251,6 +260,7 @@ class Slot(QObject):
     @pyqtSlot()
     def savePlasterWord(self, dialog):
         self.MainWindow.plasterWord = dialog.findChild(QtWidgets.QTextEdit, "plasterwordTextEdit").toPlainText().split("\n")
+        self.MainWindow.regurgitateFlag = dialog.findChild(QtWidgets.QCheckBox, "regurgitateCheckBox").isChecked()
         dialog.deleteLater()
     
     @pyqtSlot()
@@ -267,7 +277,10 @@ class Slot(QObject):
         if len(self.MainWindow.plasterBoards) == 0:
             self.MainWindow.Render.messageDialog("error", "적어도 하나의 게시판을 체크해주세요")
             return
-        if len(self.MainWindow.plasterWord) == 0:
+        if self.MainWindow.regurgitateFlag and len(self.MainWindow.others["comment"]) == 0:
+            self.MainWindow.Render.messageDialog("error", "역류를 하기 위해서는 댓글을 검색해야 합니다")
+            return
+        if len(self.MainWindow.plasterWord) == 0 and not self.MainWindow.regurgitateFlag:
             self.MainWindow.Render.messageDialog("error", "도배에 사용할 문자열을 적어주세요")
             return
         if plasterIteration == 0:
@@ -288,20 +301,26 @@ class Slot(QObject):
         option["delete"] = promptRemoveFlag
         option["anonym"] = isAnonymFlag
         option["iteration"] = plasterIteration
-        option["plasterWord"] = list(self.MainWindow.plasterWord)
+        if self.MainWindow.regurgitateFlag:
+            comments = list(map(lambda comment:comment["comment"]["text"], self.MainWindow.others["comment"]))
+            comments.reverse()
+            option["plasterWord"] = comments
+        else:
+            option["plasterWord"] = list(self.MainWindow.plasterWord)
         option["retry"] = plasterRetry
         option["interval"] = self.MainWindow.plasterInterval
-
         if "article" in self.MainWindow.others:
             option["article"] = list(filter(lambda article:article["board"] in \
             self.MainWindow.plasterBoards.values(), self.MainWindow.others["article"]))
             if len(option["article"]) == 0:
                 self.MainWindow.Render.messageDialog("error", "검색된 글이 없습니다")
+                return
         if "comment" in self.MainWindow.others:
             option["comment"] = list(filter(lambda article:article["board"] in \
             self.MainWindow.plasterBoards.values(), self.MainWindow.others["article"]))
             if len(option["comment"]) == 0:
                 self.MainWindow.Render.messageDialog("error", "검색된 댓글이 없습니다")
+                return
         self.MainWindow.RequestHandle.plaster(option)
 
     @pyqtSlot()
@@ -364,7 +383,8 @@ class Signal:
         self.MainWindow.findChild(QtWidgets.QPushButton, "searchButton").clicked.connect(self.MainWindow.Slot.startSearch)
         self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.abortSearch)
         self.MainWindow.findChild(QtWidgets.QPushButton, "detailButton").clicked.connect(self.MainWindow.Slot.searchedDetail)
-        self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").setValidator(QtGui.QIntValidator(0, 10000))
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").setValidator(QtGui.QIntValidator(0, 100000))
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageEndLineEdit").setValidator(QtGui.QIntValidator(0, 100000))
 
     def configMenu(self):
         self.MainWindow.findChild(QtWidgets.QPushButton, "saveButton").clicked.connect(self.MainWindow.Slot.configSave)

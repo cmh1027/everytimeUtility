@@ -16,18 +16,24 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>221</width>
-     <height>169</height>
+     <x>0</x>
+     <y>4</y>
+     <width>228</width>
+     <height>211</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
      <number>5</number>
     </property>
+    <property name="leftMargin">
+     <number>6</number>
+    </property>
     <property name="topMargin">
      <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>6</number>
     </property>
     <property name="bottomMargin">
      <number>0</number>
@@ -71,8 +77,20 @@
       </property>
       <item>
        <widget class="QLabel" name="label_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>32</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text">
-         <string>탐색 페이지 수</string>
+         <string>탐색 </string>
         </property>
        </widget>
       </item>
@@ -101,6 +119,35 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
+         <string>페이지 ~</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="searchpageEndLineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>35</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>35</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="maxLength">
+         <number>14</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
          <string>페이지</string>
         </property>
        </widget>
@@ -110,7 +157,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="rightMargin">
-       <number>12</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="QLabel" name="label">
@@ -126,6 +173,24 @@
         </property>
         <property name="maxLength">
          <number>14</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="allCheckBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>굴림</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>모두</string>
         </property>
        </widget>
       </item>
@@ -259,40 +324,10 @@
       <property name="rightMargin">
        <number>13</number>
       </property>
-      <item>
-       <widget class="QLabel" name="infoLabel">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>115</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>맑은 고딕</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item>
+      <item alignment="Qt::AlignRight">
        <widget class="QPushButton" name="detailButton">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -322,6 +357,36 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="infoLabel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>115</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>맑은 고딕</family>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
