@@ -177,10 +177,13 @@ class Slot(QObject):
     def saveSelectBoard(self, dialog):
         checkboxes = dialog.findChildren(QtWidgets.QCheckBox)
         checkboxes = list(filter(lambda checkbox:checkbox.isChecked(), checkboxes))
-        for checkbox in checkboxes:
-            if self.MainWindow.currentMenu == "search":
+        if self.MainWindow.currentMenu == "search":
+            self.MainWindow.selectedBoards.clear()
+            for checkbox in checkboxes:
                 self.MainWindow.selectedBoards[checkbox.text()] = self.MainWindow.boards[checkbox.text()]
-            elif self.MainWindow.currentMenu == "plaster":
+        elif self.MainWindow.currentMenu == "plaster":
+            self.MainWindow.plasterBoards.clear()
+            for checkbox in checkboxes:
                 self.MainWindow.plasterBoards[checkbox.text()] = self.MainWindow.boards[checkbox.text()]
 
     @pyqtSlot()
@@ -292,15 +295,6 @@ class Slot(QObject):
         if plasterIteration == 0:
             self.MainWindow.Render.messageDialog("error", "반복 횟수는 1 이상이어야 합니다")
             return
-        self.MainWindow.plastering = True
-        self.MainWindow.articlePlasterFlag = articlePlasterFlag
-        self.MainWindow.commentPlasterFlag = commentPlasterFlag
-        self.MainWindow.promptRemoveFlag = promptRemoveFlag
-        self.MainWindow.isAnonymFlag = isAnonymFlag
-        self.MainWindow.plasterIteration = plasterIteration
-        btn = self.MainWindow.findChild(QtWidgets.QPushButton, "startplatsterButton")
-        self.MainWindow.Render.disableButton(btn, "도배중")
-        self.MainWindow.Render.addTextEdit("[System] 도배를 시작합니다")
         option = {}
         option["articleFlag"] = articlePlasterFlag
         option["commentFlag"] = commentPlasterFlag
@@ -322,6 +316,15 @@ class Slot(QObject):
             if len(option["comment"]) == 0:
                 self.MainWindow.Render.messageDialog("error", "검색된 댓글이 없습니다")
                 return
+        self.MainWindow.plastering = True
+        self.MainWindow.articlePlasterFlag = articlePlasterFlag
+        self.MainWindow.commentPlasterFlag = commentPlasterFlag
+        self.MainWindow.promptRemoveFlag = promptRemoveFlag
+        self.MainWindow.isAnonymFlag = isAnonymFlag
+        self.MainWindow.plasterIteration = plasterIteration
+        btn = self.MainWindow.findChild(QtWidgets.QPushButton, "startplatsterButton")
+        self.MainWindow.Render.disableButton(btn, "도배중")
+        self.MainWindow.Render.addTextEdit("[System] 도배를 시작합니다")
         self.MainWindow.RequestHandle.plaster(option)
 
 
