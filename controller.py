@@ -5,6 +5,7 @@ class Slot(QObject):
     searchMineEndSignal = pyqtSignal()
     searchOthersEndSignal = pyqtSignal()
     deleteEndSignal = pyqtSignal()
+    plasterEndSignal = pyqtSignal()
     addProgressSignal = pyqtSignal(str)
 
     def __init__(self, MainWindow):
@@ -13,6 +14,7 @@ class Slot(QObject):
         self.searchMineEndSignal.connect(self.searchMineEnd)
         self.searchOthersEndSignal.connect(self.searchOthersEnd)
         self.deleteEndSignal.connect(self.deleteEnd)
+        self.plasterEndSignal.connect(self.plasterEnd)
         self.addProgressSignal.connect(self.addProgress)
     
     @pyqtSlot(str)
@@ -35,6 +37,12 @@ class Slot(QObject):
             self.MainWindow.boards = self.MainWindow.RequestHandle.extractBoards(response)
         else:
             self.MainWindow.Render.messageDialog("failed", "아이디나 비밀번호를 바르게 입력해주세요")
+
+    @pyqtSlot()
+    def logout(self):
+        self.MainWindow.RequestHandle.logout()
+        self.MainWindow.initialize()
+        self.MainWindow.Render.login()
            
     @pyqtSlot()
     def deleteMenu(self):
@@ -73,6 +81,7 @@ class Slot(QObject):
     @pyqtSlot()
     def plasterMenu(self):
         self.MainWindow.currentMenu = "plaster"
+        self.MainWindow.Render.plaster()
 
     @pyqtSlot()
     def searchMenu(self):
@@ -94,6 +103,14 @@ class Slot(QObject):
         self.MainWindow.printIdFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "printidCheckBox").isChecked()
         self.MainWindow.printTextFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "printtextCheckBox").isChecked()
         self.MainWindow.printOriginFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "printoriginCheckBox").isChecked()
+        self.MainWindow.printBoardSearchEndFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "printboardsearchendCheckBox").isChecked()
+        plasterInterval = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "plasterintervalLineEdit").text())
+        if plasterInterval == 0:
+            self.MainWindow.Render.messageDialog("failed", "도배 간격은 0초가 될 수 없습니다")
+            return
+        else:
+            self.MainWindow.plasterInterval = plasterInterval
+        self.MainWindow.printPlasterFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "printplasterCheckBox").isChecked()
         self.MainWindow.Render.messageDialog("save", "저장되었습니다")
 
     @pyqtSlot()
@@ -163,20 +180,33 @@ class Slot(QObject):
         checkboxes = dialog.findChildren(QtWidgets.QCheckBox)
         checkboxes = list(filter(lambda checkbox:checkbox.isChecked(), checkboxes))
         for checkbox in checkboxes:
-            self.MainWindow.selectedBoards[checkbox.text()] = self.MainWindow.boards[checkbox.text()]
+            if self.MainWindow.currentMenu == "search":
+                self.MainWindow.selectedBoards[checkbox.text()] = self.MainWindow.boards[checkbox.text()]
+            elif self.MainWindow.currentMenu == "plaster":
+                self.MainWindow.plasterBoards[checkbox.text()] = self.MainWindow.boards[checkbox.text()]
 
     @pyqtSlot()
     def startSearch(self):
-        self.MainWindow.searchPage = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").text())
-        self.MainWindow.nickname = self.MainWindow.findChild(QtWidgets.QLineEdit, "nicknameLineEdit").text()
-        self.MainWindow.articleCheckFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "articleCheckBox").isChecked()
-        self.MainWindow.commentCheckFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "commentCheckBox").isChecked()
-        if not self.MainWindow.articleCheckFlag and not self.MainWindow.commentCheckFlag:
+        searchPage = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").text())
+        searchNickname = self.MainWindow.findChild(QtWidgets.QLineEdit, "nicknameLineEdit").text()
+        articleCheckFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "articleCheckBox").isChecked()
+        commentCheckFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "commentCheckBox").isChecked()
+        if not articleCheckFlag and not commentCheckFlag:
             self.MainWindow.Render.messageDialog("error", "글 혹은 댓글 검색 중 적어도 하나를 체크해주세요")
             return
         if len(self.MainWindow.selectedBoards) == 0:
             self.MainWindow.Render.messageDialog("error", "적어도 하나의 게시판을 체크해주세요")
-            return            
+            return
+        if searchPage == 0:
+            self.MainWindow.Render.messageDialog("error", "페이지 수는 1 이상이어야 합니다")
+            return
+        if searchNickname == "":
+            self.MainWindow.Render.messageDialog("error", "닉네임을 입력해주세요")
+            return
+        self.MainWindow.searchPage = searchPage
+        self.MainWindow.searchNickname = searchNickname
+        self.MainWindow.articleCheckFlag = articleCheckFlag
+        self.MainWindow.commentCheckFlag = commentCheckFlag
         self.MainWindow.others = {}
         btn = self.MainWindow.findChild(QtWidgets.QPushButton, "searchButton")
         self.MainWindow.Render.disableButton(btn, "검색중")
@@ -184,10 +214,10 @@ class Slot(QObject):
         self.MainWindow.Render.addTextEdit("[System] 검색을 시작합니다")
         option = {}
         option["boards"] = self.MainWindow.selectedBoards
-        option["page"] = self.MainWindow.searchPage
-        option["nickname"] = self.MainWindow.nickname
-        option["articleFlag"] = self.MainWindow.articleCheckFlag
-        option["commentFlag"] = self.MainWindow.commentCheckFlag
+        option["page"] = searchPage
+        option["nickname"] = searchNickname
+        option["articleFlag"] = articleCheckFlag
+        option["commentFlag"] = commentCheckFlag
         self.MainWindow.RequestHandle.searchOthers(option)
 
     @pyqtSlot()
@@ -213,6 +243,84 @@ class Slot(QObject):
         self.MainWindow.searchingOthers = False
         if self.MainWindow.currentMenu == "search":
             self.MainWindow.Render.searchOthersEnd()
+        elif self.MainWindow.currentMenu == "plaster":
+            self.MainWindow.Render.searchOthersEndPlaster()
+
+    @pyqtSlot()
+    def plasterWord(self):
+        self.MainWindow.Render.plasterWord()
+
+    @pyqtSlot()
+    def savePlasterWord(self, dialog):
+        self.MainWindow.plasterWord = dialog.findChild(QtWidgets.QTextEdit, "plasterwordTextEdit").toPlainText().split("\n")
+        dialog.deleteLater()
+    
+    @pyqtSlot()
+    def startPlaster(self):
+        articlePlasterFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "articleplasterCheckBox").isChecked()
+        commentPlasterFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "commentplasterCheckBox").isChecked()       
+        promptRemoveFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "promptremoveCheckBox").isChecked()  
+        isAnonymFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "isanonymFlag").isChecked()
+        plasterIteration = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "iterationLineEdit").text())
+        plasterRetry = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "retryLineEdit").text())
+        if not articlePlasterFlag and not commentPlasterFlag:
+            self.MainWindow.Render.messageDialog("error", "글 혹은 댓글 도배 중 적어도 하나를 체크해주세요")
+            return
+        if len(self.MainWindow.plasterBoards) == 0:
+            self.MainWindow.Render.messageDialog("error", "적어도 하나의 게시판을 체크해주세요")
+            return
+        if len(self.MainWindow.plasterWord) == 0:
+            self.MainWindow.Render.messageDialog("error", "도배에 사용할 문자열을 적어주세요")
+            return
+        if plasterIteration == 0:
+            self.MainWindow.Render.messageDialog("error", "반복 횟수는 1 이상이어야 합니다")
+            return
+        self.MainWindow.plastering = True
+        self.MainWindow.articlePlasterFlag = articlePlasterFlag
+        self.MainWindow.commentPlasterFlag = commentPlasterFlag
+        self.MainWindow.promptRemoveFlag = promptRemoveFlag
+        self.MainWindow.isAnonymFlag = isAnonymFlag
+        self.MainWindow.plasterIteration = plasterIteration
+        btn = self.MainWindow.findChild(QtWidgets.QPushButton, "startplatsterButton")
+        self.MainWindow.Render.disableButton(btn, "도배중")
+        self.MainWindow.Render.addTextEdit("[System] 도배를 시작합니다")
+        option = {}
+        option["articleFlag"] = articlePlasterFlag
+        option["commentFlag"] = commentPlasterFlag
+        option["delete"] = promptRemoveFlag
+        option["anonym"] = isAnonymFlag
+        option["iteration"] = plasterIteration
+        option["plasterWord"] = list(self.MainWindow.plasterWord)
+        option["retry"] = plasterRetry
+        option["interval"] = self.MainWindow.plasterInterval
+        if "article" in self.MainWindow.others:
+            option["article"] = list(filter(lambda article:article["board"] in \
+            self.MainWindow.plasterBoards.values(), self.MainWindow.others["article"]))
+            if len(option["article"]) == 0:
+                self.MainWindow.Render.messageDialog("error", "검색된 글이 없습니다")
+        if "comment" in self.MainWindow.others:
+            option["comment"] = list(filter(lambda article:article["board"] in \
+            self.MainWindow.plasterBoards.values(), self.MainWindow.others["article"]))
+            if len(option["comment"]) == 0:
+                self.MainWindow.Render.messageDialog("error", "검색된 댓글이 없습니다")
+        self.MainWindow.RequestHandle.plaster(option)
+
+    @pyqtSlot()
+    def abortPlaster(self):
+        self.MainWindow.RequestHandle.abortPlaster()
+        self.MainWindow.plastering = False
+        btn = self.MainWindow.findChild(QtWidgets.QPushButton, "startplatsterButton")
+        self.MainWindow.Render.enableButton(btn, "Go!")
+        self.MainWindow.Render.addTextEdit("[System] 도배를 중지합니다")
+
+    @pyqtSlot()
+    def plasterEnd(self):
+        self.MainWindow.Render.addTextEdit("[System] 도배 완료")
+        self.MainWindow.plastering = False
+        if self.MainWindow.currentMenu == "search":
+            self.MainWindow.Render.plasterEndSearch()
+        elif self.MainWindow.currentMenu == "plaster":
+            self.MainWindow.Render.plasterEnd()
 
 class Signal:
     def __init__(self, MainWindow):
@@ -229,9 +337,10 @@ class Signal:
     
     def home(self):
         self.MainWindow.findChild(QtWidgets.QToolButton, "deleteButton").clicked.connect(self.MainWindow.Slot.deleteMenu)
-        self.MainWindow.findChild(QtWidgets.QToolButton, "plasterButton").clicked.connect(self.MainWindow.Slot.plasterMenu)
         self.MainWindow.findChild(QtWidgets.QToolButton, "searchButton").clicked.connect(self.MainWindow.Slot.searchMenu)
+        self.MainWindow.findChild(QtWidgets.QToolButton, "plasterButton").clicked.connect(self.MainWindow.Slot.plasterMenu)
         self.MainWindow.findChild(QtWidgets.QToolButton, "configButton").clicked.connect(self.MainWindow.Slot.configMenu)
+        self.MainWindow.findChild(QtWidgets.QToolButton, "logoutButton").clicked.connect(self.MainWindow.Slot.logout)
         self.MainWindow.findChild(QtWidgets.QPushButton, "eraseButton").clicked.connect(self.MainWindow.Slot.eraseProgress)
     
     def deleteMenu(self):
@@ -239,24 +348,30 @@ class Signal:
         self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.abortDelete)
         self.MainWindow.findChild(QtWidgets.QPushButton, "refreshButton").clicked.connect(self.MainWindow.Slot.mineRefresh)
         self.MainWindow.findChild(QtWidgets.QPushButton, "detailButton").clicked.connect(self.MainWindow.Slot.mineDetail)
-        self.MainWindow.findChild(QtWidgets.QLineEdit, "minlikeLineEdit").setValidator(QtGui.QIntValidator(0, 1000))
-        self.MainWindow.findChild(QtWidgets.QLineEdit, "mincommentLineEdit").setValidator(QtGui.QIntValidator(0, 1000))
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "minlikeLineEdit").setValidator(QtGui.QIntValidator(0, 10000))
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "mincommentLineEdit").setValidator(QtGui.QIntValidator(0, 10000))
         self.MainWindow.findChild(QtWidgets.QPushButton, "excludeWordButton").clicked.connect(self.MainWindow.Slot.excludeWord)
 
     def plasterMenu(self):
-        pass
+        self.MainWindow.findChild(QtWidgets.QPushButton, "selectboardButton").clicked.connect(self.MainWindow.Slot.selectBoard)
+        self.MainWindow.findChild(QtWidgets.QPushButton, "plasterWordButton").clicked.connect(self.MainWindow.Slot.plasterWord)
+        self.MainWindow.findChild(QtWidgets.QPushButton, "startplatsterButton").clicked.connect(self.MainWindow.Slot.startPlaster)
+        self.MainWindow.findChild(QtWidgets.QPushButton, "cancelplasterButton").clicked.connect(self.MainWindow.Slot.abortPlaster)
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "iterationLineEdit").setValidator(QtGui.QIntValidator(0, 10000))
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "retryLineEdit").setValidator(QtGui.QIntValidator(0, 100))
 
     def searchMenu(self):
         self.MainWindow.findChild(QtWidgets.QPushButton, "selectboardButton").clicked.connect(self.MainWindow.Slot.selectBoard)
         self.MainWindow.findChild(QtWidgets.QPushButton, "searchButton").clicked.connect(self.MainWindow.Slot.startSearch)
         self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.abortSearch)
         self.MainWindow.findChild(QtWidgets.QPushButton, "detailButton").clicked.connect(self.MainWindow.Slot.searchedDetail)
-        self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").setValidator(QtGui.QIntValidator(0, 9999))
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").setValidator(QtGui.QIntValidator(0, 10000))
 
     def configMenu(self):
         self.MainWindow.findChild(QtWidgets.QPushButton, "saveButton").clicked.connect(self.MainWindow.Slot.configSave)
         self.MainWindow.findChild(QtWidgets.QLineEdit, "threadcountLineEdit").setValidator(QtGui.QIntValidator(1, 100))
-
+        self.MainWindow.findChild(QtWidgets.QLineEdit, "plasterintervalLineEdit").setValidator(QtGui.QDoubleValidator(1, 100, 3))
+    
     def excludeWord(self, dialog):
         button = dialog.findChild(QtWidgets.QDialogButtonBox, "buttonBox")
         button.accepted.connect(lambda: self.MainWindow.Slot.saveExcludeWord(dialog))
@@ -270,3 +385,8 @@ class Signal:
     def searchedDetail(self, dialog):
         button = dialog.findChild(QtWidgets.QPushButton, "cancelButton")
         button.clicked.connect(lambda: self.MainWindow.Slot.cancelDialog(dialog))
+    
+    def plasterWord(self, dialog):
+        button = dialog.findChild(QtWidgets.QDialogButtonBox, "buttonBox")
+        button.accepted.connect(lambda: self.MainWindow.Slot.savePlasterWord(dialog))
+        button.rejected.connect(lambda: self.MainWindow.Slot.cancelDialog(dialog))

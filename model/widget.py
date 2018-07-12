@@ -42,10 +42,23 @@ class Window(QtWidgets.QMainWindow):
         self.others = {} # Articles and comments of others
         self.selectedBoards = {}
         self.searchPage = 0
-        self.nickname = ""
+        self.searchNickname = ""
         self.articleCheckFlag = False
         self.commentCheckFlag = False
         self.searchingOthers = False
+
+        self.plasterBoards = {}
+        self.plasterWord = []
+        self.plastering = False
+        self.articlePlasterFlag = True
+        self.commentPlasterFlag = True
+        self.promptRemoveFlag = True
+        self.isAnonymFlag = True
+        self.printPlasterFlag = False
+        self.plasterIteration = 1
+        self.plasterRetry = 4
+        self.plasterInterval = 4
+
 
 class MessageDialog(QtWidgets.QDialog):
     def __init__(self, parent, title, content):

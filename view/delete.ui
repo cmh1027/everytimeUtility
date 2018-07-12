@@ -99,7 +99,7 @@
          <string/>
         </property>
         <property name="maxLength">
-         <number>3</number>
+         <number>4</number>
         </property>
        </widget>
       </item>
@@ -241,7 +241,7 @@
          <string/>
         </property>
         <property name="maxLength">
-         <number>3</number>
+         <number>4</number>
         </property>
        </widget>
       </item>
@@ -275,7 +275,7 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="1" alignment="Qt::AlignHCenter">
+    <item row="6" column="1" alignment="Qt::AlignLeft">
      <widget class="QPushButton" name="cancelButton">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -307,7 +307,7 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="0" alignment="Qt::AlignHCenter">
+    <item row="6" column="0" alignment="Qt::AlignRight">
      <widget class="QPushButton" name="deleteButton">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

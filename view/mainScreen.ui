@@ -212,7 +212,7 @@ color:rgb(8, 53, 255)</string>
       <x>0</x>
       <y>101</y>
       <width>141</width>
-      <height>121</height>
+      <height>141</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="menuLayout">
@@ -241,7 +241,7 @@ color:rgb(8, 53, 255)</string>
 background-color:rgb(156, 226, 255)</string>
        </property>
        <property name="text">
-        <string>글/댓글 삭제</string>
+        <string>Delete</string>
        </property>
       </widget>
      </item>
@@ -264,7 +264,7 @@ background-color:rgb(156, 226, 255)</string>
 background-color:rgb(156, 226, 255)</string>
        </property>
        <property name="text">
-        <string>고정닉 검색</string>
+        <string>Seach</string>
        </property>
       </widget>
      </item>
@@ -289,7 +289,7 @@ background-color:rgb(156, 226, 255)</string>
 background-color:rgb(156, 226, 255)</string>
        </property>
        <property name="text">
-        <string>도배</string>
+        <string>Plaster</string>
        </property>
       </widget>
      </item>
@@ -312,7 +312,29 @@ background-color:rgb(156, 226, 255)</string>
 background-color:rgb(156, 226, 255)</string>
        </property>
        <property name="text">
-        <string>설정</string>
+        <string>Configuration</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="logoutButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <family>양재소슬체S</family>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color:rgb(255, 106, 121)</string>
+       </property>
+       <property name="text">
+        <string>Logout</string>
        </property>
       </widget>
      </item>
