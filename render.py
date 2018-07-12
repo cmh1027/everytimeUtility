@@ -259,10 +259,6 @@ class Render:
         Dialog.show()
         textEdit = Dialog.findChild(QtWidgets.QTextEdit, "plasterwordTextEdit")
         textEdit.setText('\n'.join(self.MainWindow.plasterWord))
-        checkbox = Dialog.findChild(QtWidgets.QCheckBox, "regurgitateCheckBox")
-        checkbox.setChecked(self.MainWindow.regurgitateFlag)
-        checkbox.stateChanged.connect(lambda: textEdit.setEnabled(not checkbox.isChecked()))
-        textEdit.setEnabled(not checkbox.isChecked())
         self.MainWindow.Signal.bind("plasterWord", Dialog)
     
     def plasterEndSearch(self):

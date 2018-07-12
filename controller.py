@@ -245,6 +245,16 @@ class Slot(QObject):
         self.MainWindow.Render.mineDetail()
 
     @pyqtSlot()
+    def saveComment(self):
+        if "comment" in self.MainWindow.others:
+            comments = list(map(lambda comment:comment["comment"]["text"], self.MainWindow.others["comment"]))
+            comments.reverse()
+            self.MainWindow.plasterWord = comments
+            self.MainWindow.Render.messageDialog("ok", "저장되었습니다")
+        else:
+            self.MainWindow.Render.messageDialog("error", "댓글을 먼저 검색해주세요")
+
+    @pyqtSlot()
     def searchOthersEnd(self):
         self.MainWindow.Render.addTextEdit("[System] 검색 완료")
         self.MainWindow.searchingOthers = False
@@ -260,7 +270,6 @@ class Slot(QObject):
     @pyqtSlot()
     def savePlasterWord(self, dialog):
         self.MainWindow.plasterWord = dialog.findChild(QtWidgets.QTextEdit, "plasterwordTextEdit").toPlainText().split("\n")
-        self.MainWindow.regurgitateFlag = dialog.findChild(QtWidgets.QCheckBox, "regurgitateCheckBox").isChecked()
         dialog.deleteLater()
     
     @pyqtSlot()
@@ -277,10 +286,7 @@ class Slot(QObject):
         if len(self.MainWindow.plasterBoards) == 0:
             self.MainWindow.Render.messageDialog("error", "적어도 하나의 게시판을 체크해주세요")
             return
-        if self.MainWindow.regurgitateFlag and len(self.MainWindow.others["comment"]) == 0:
-            self.MainWindow.Render.messageDialog("error", "역류를 하기 위해서는 댓글을 검색해야 합니다")
-            return
-        if len(self.MainWindow.plasterWord) == 0 and not self.MainWindow.regurgitateFlag:
+        if len(self.MainWindow.plasterWord) == 0:
             self.MainWindow.Render.messageDialog("error", "도배에 사용할 문자열을 적어주세요")
             return
         if plasterIteration == 0:
@@ -301,12 +307,7 @@ class Slot(QObject):
         option["delete"] = promptRemoveFlag
         option["anonym"] = isAnonymFlag
         option["iteration"] = plasterIteration
-        if self.MainWindow.regurgitateFlag:
-            comments = list(map(lambda comment:comment["comment"]["text"], self.MainWindow.others["comment"]))
-            comments.reverse()
-            option["plasterWord"] = comments
-        else:
-            option["plasterWord"] = list(self.MainWindow.plasterWord)
+        option["plasterWord"] = list(self.MainWindow.plasterWord)
         option["retry"] = plasterRetry
         option["interval"] = self.MainWindow.plasterInterval
         if "article" in self.MainWindow.others:
@@ -322,6 +323,7 @@ class Slot(QObject):
                 self.MainWindow.Render.messageDialog("error", "검색된 댓글이 없습니다")
                 return
         self.MainWindow.RequestHandle.plaster(option)
+
 
     @pyqtSlot()
     def abortPlaster(self):
@@ -383,6 +385,7 @@ class Signal:
         self.MainWindow.findChild(QtWidgets.QPushButton, "searchButton").clicked.connect(self.MainWindow.Slot.startSearch)
         self.MainWindow.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.MainWindow.Slot.abortSearch)
         self.MainWindow.findChild(QtWidgets.QPushButton, "detailButton").clicked.connect(self.MainWindow.Slot.searchedDetail)
+        self.MainWindow.findChild(QtWidgets.QPushButton, "savecommentButton").clicked.connect(self.MainWindow.Slot.saveComment)
         self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").setValidator(QtGui.QIntValidator(0, 100000))
         self.MainWindow.findChild(QtWidgets.QLineEdit, "searchpageEndLineEdit").setValidator(QtGui.QIntValidator(0, 100000))
 

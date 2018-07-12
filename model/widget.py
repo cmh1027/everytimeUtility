@@ -57,7 +57,6 @@ class Window(QtWidgets.QMainWindow):
         self.promptRemoveFlag = True
         self.isAnonymFlag = True
         self.printPlasterFlag = False
-        self.regurgitateFlag = False
         self.plasterIteration = 1
         self.plasterRetry = 4
         self.plasterInterval = 4
