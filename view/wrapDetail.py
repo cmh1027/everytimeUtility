@@ -21,9 +21,9 @@ class OthersDetail(object):
             for row, article in enumerate(others["article"]):
                 articleTableWidget.insertRow(row)
                 if article["article"]["title"] == "":
-                    item = QtWidgets.QTableWidgetItem(article["article"]["text"].replace("<br />", " "))
+                    item = QtWidgets.QTableWidgetItem(article["article"]["text"].replace("<br />", " ").replace("&lt;", "<"))
                 else:
-                    item = QtWidgets.QTableWidgetItem(article["article"]["title"])
+                    item = QtWidgets.QTableWidgetItem(article["article"]["title"].replace("&lt;", "<"))
                 articleTableWidget.setItem(row, 0, item)
                 item = QtWidgets.QTableWidgetItem(article["article"]["comment"])
                 articleTableWidget.setItem(row, 1, item)
@@ -41,12 +41,12 @@ class OthersDetail(object):
         if "comment" in others:
             for row, comment in enumerate(others["comment"]):
                 commentTableWidget.insertRow(row)
-                item = QtWidgets.QTableWidgetItem(comment["comment"]["text"])
+                item = QtWidgets.QTableWidgetItem(comment["comment"]["text"].replace("&lt;", "<"))
                 commentTableWidget.setItem(row, 0, item)
                 if comment["article"]["title"] == "":
-                    item = QtWidgets.QTableWidgetItem(comment["article"]["text"].replace("<br />", " "))
+                    item = QtWidgets.QTableWidgetItem(comment["article"]["text"].replace("<br />", " ").replace("&lt;", "<"))
                 else:
-                    item = QtWidgets.QTableWidgetItem(comment["article"]["title"])
+                    item = QtWidgets.QTableWidgetItem(comment["article"]["title"].replace("&lt;", "<"))
                 commentTableWidget.setItem(row, 1, item)
                 item = QtWidgets.QTableWidgetItem(comment["comment"]["created_at"])
                 commentTableWidget.setItem(row, 2, item)

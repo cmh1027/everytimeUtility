@@ -254,12 +254,15 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="spacing">
-       <number>16</number>
+       <number>5</number>
+      </property>
+      <property name="rightMargin">
+       <number>13</number>
       </property>
       <item>
        <widget class="QLabel" name="infoLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>

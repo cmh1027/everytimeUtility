@@ -354,7 +354,7 @@ class RequestHandle:
             if option["articleFlag"]:
                 others["article"].extend(articles)
             if self.MainWindow.printBoardSearchEndFlag and (mult*threadCount + number) % 10 == 0 and (mult*threadCount + number) > 0 :
-                self.MainWindow.Slot.addProgressSignal.emit("[System] {} 페이지 검색 완료".format(mult*threadCount + number+1))
+                self.MainWindow.Slot.addProgressSignal.emit("[System] {} 페이지 검색 완료".format(mult*threadCount + number))
             mult = mult+1
 
     def searchOthersTarget(self, threadCount, option):
