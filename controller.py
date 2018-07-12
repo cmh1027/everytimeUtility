@@ -291,8 +291,7 @@ class Slot(QObject):
         option["plasterWord"] = list(self.MainWindow.plasterWord)
         option["retry"] = plasterRetry
         option["interval"] = self.MainWindow.plasterInterval
-        self.MainWindow.plasterWord = list(map(lambda comment:comment["comment"]["text"], self.others["comment"]))
-        self.MainWindow.plasterWord.reverse()
+
         if "article" in self.MainWindow.others:
             option["article"] = list(filter(lambda article:article["board"] in \
             self.MainWindow.plasterBoards.values(), self.MainWindow.others["article"]))
