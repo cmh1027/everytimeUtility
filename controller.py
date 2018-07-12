@@ -29,8 +29,6 @@ class Slot(QObject):
     def login(self):
         _id = self.MainWindow.findChild(QtWidgets.QLineEdit, "idLineEdit").text()
         password = self.MainWindow.findChild(QtWidgets.QLineEdit, "passwordLineEdit").text()
-        _id = "sodlqnf123"
-        password = "sodlqnf12"
         response = self.MainWindow.RequestHandle.login(_id, password)
         if response:
             self.MainWindow.Render.home(response)
@@ -293,6 +291,7 @@ class Slot(QObject):
         option["plasterWord"] = list(self.MainWindow.plasterWord)
         option["retry"] = plasterRetry
         option["interval"] = self.MainWindow.plasterInterval
+
         if "article" in self.MainWindow.others:
             option["article"] = list(filter(lambda article:article["board"] in \
             self.MainWindow.plasterBoards.values(), self.MainWindow.others["article"]))
