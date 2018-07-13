@@ -251,8 +251,7 @@ class Slot(QObject):
     def saveComment(self):
         if "comment" in self.MainWindow.others:
             comments = list(map(lambda comment:comment["comment"]["text"], self.MainWindow.others["comment"]))
-            comments.reverse()
-            self.MainWindow.plasterWord = comments
+            self.MainWindow.plasterWord = list(reversed(comments))
             self.MainWindow.Render.messageDialog("ok", "저장되었습니다")
         else:
             self.MainWindow.Render.messageDialog("error", "댓글을 먼저 검색해주세요")
