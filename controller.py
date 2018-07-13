@@ -329,11 +329,12 @@ class Slot(QObject):
 
     @pyqtSlot()
     def abortPlaster(self):
-        self.MainWindow.RequestHandle.abortPlaster()
-        self.MainWindow.plastering = False
-        btn = self.MainWindow.findChild(QtWidgets.QPushButton, "startplatsterButton")
-        self.MainWindow.Render.enableButton(btn, "Go!")
-        self.MainWindow.Render.addTextEdit("[System] 도배를 중지합니다")
+        if self.MainWindow.plastering:
+            self.MainWindow.RequestHandle.abortPlaster()
+            self.MainWindow.plastering = False
+            btn = self.MainWindow.findChild(QtWidgets.QPushButton, "startplatsterButton")
+            self.MainWindow.Render.enableButton(btn, "Go!")
+            self.MainWindow.Render.addTextEdit("[System] 도배를 중지합니다")
 
     @pyqtSlot()
     def plasterEnd(self):
