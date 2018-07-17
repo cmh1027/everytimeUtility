@@ -48,6 +48,10 @@ class Window(QtWidgets.QMainWindow):
         self.commentCheckFlag = False
         self.searchAllFlag = False
         self.searchingOthers = False
+        self.articleKeyword = ""
+        self.commentKeyword = ""
+        self.articleKeywordFlag = False
+        self.commentKeywordFlag = False
 
         self.plasterBoards = {}
         self.plasterWord = []

@@ -17,14 +17,14 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>4</y>
+     <y>0</y>
      <width>228</width>
-     <height>211</height>
+     <height>221</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
-     <number>5</number>
+     <number>2</number>
     </property>
     <property name="leftMargin">
      <number>6</number>
@@ -191,6 +191,96 @@
         </property>
         <property name="text">
          <string>모두</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="minimumSize">
+         <size>
+          <width>64</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>글 키워드</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="articlekeywordLineEdit">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="maxLength">
+         <number>14</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="articlekeywordCheckBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>굴림</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>사용</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>댓글 키워드</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="commentkeywordLineEdit">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="maxLength">
+         <number>14</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="commentkeywordCheckBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>굴림</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>사용</string>
         </property>
        </widget>
       </item>

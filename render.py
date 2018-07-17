@@ -4,12 +4,27 @@ from os.path import splitext, basename
 from importlib import import_module
 from bs4 import BeautifulSoup
 import model.widget as widget
+# Pyinstaller can not detect dynamic import
+# for module in glob('view/*'):
+#    name, ext = splitext(module)
+#    name = basename(name)
+#    if ext == '.py':
+#        globals()[name] = import_module("view.{}".format(name))
+import view.configuration as configuration
+import view.delete as delete
+import view.excludeWordDialog as excludeWordDialog
+import view.loading as loading
+import view.loginScreen as loginScreen
+import view.mainScreen as mainScreen
+import view.messageDialog as messageDialog
+import view.plaster as plaster
+import view.plasterWordDialog as plasterWordDialog
+import view.search as search
+import view.selectBoardDialog as selectBoardDialog
+import view.wrapDetail as wrapDetail
 
-for module in glob('view/*'):
-    name, ext = splitext(module)
-    name = basename(name)
-    if ext == '.py':
-        globals()[name] = import_module("view.{}".format(name))
+
+
 
 def window_clear(function):
     def wrapper(*args):
@@ -128,10 +143,23 @@ class Render:
         nickname.setText(self.MainWindow.searchNickname)
         self.MainWindow.findChild(QtWidgets.QCheckBox, "articleCheckBox").setChecked(self.MainWindow.articleCheckFlag)
         self.MainWindow.findChild(QtWidgets.QCheckBox, "commentCheckBox").setChecked(self.MainWindow.commentCheckFlag)
+        articleKeyword = self.MainWindow.findChild(QtWidgets.QLineEdit, "articlekeywordLineEdit")
+        articleKeyword.setText(self.MainWindow.articleKeyword)
+        commentKeyword = self.MainWindow.findChild(QtWidgets.QLineEdit, "commentkeywordLineEdit")
+        commentKeyword.setText(self.MainWindow.commentKeyword)
         checkbox = self.MainWindow.findChild(QtWidgets.QCheckBox, "allCheckBox")
         checkbox.setChecked(self.MainWindow.searchAllFlag)
         checkbox.stateChanged.connect(lambda: nickname.setEnabled(not checkbox.isChecked()))
         nickname.setEnabled(not checkbox.isChecked())
+        checkbox2 = self.MainWindow.findChild(QtWidgets.QCheckBox, "articlekeywordCheckBox")
+        checkbox2.setChecked(self.MainWindow.articleKeywordFlag)
+        checkbox2.stateChanged.connect(lambda: articleKeyword.setEnabled(checkbox2.isChecked()))
+        articleKeyword.setEnabled(checkbox2.isChecked())
+        checkbox3 = self.MainWindow.findChild(QtWidgets.QCheckBox, "commentkeywordCheckBox")
+        checkbox3.setChecked(self.MainWindow.commentKeywordFlag)
+        checkbox3.stateChanged.connect(lambda: commentKeyword.setEnabled(checkbox3.isChecked()))
+        commentKeyword.setEnabled(checkbox3.isChecked())
+
         if not self.MainWindow.searchingOthers:
             if "article" in self.MainWindow.others and "comment" in self.MainWindow.others:
                 self.MainWindow.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개 / 댓글 {}개".format(len(self.MainWindow.others["article"]), len(self.MainWindow.others["comment"])))

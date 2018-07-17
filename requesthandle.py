@@ -92,7 +92,7 @@ class RequestHandle:
             result = self.searchComment(commentedList[index])
             commentList.extend(result)
     
-    def searchComment(self, article, nickname=None):
+    def searchComment(self, article, option=None):
         data = {"id":article["id"], "limit_num":-1, "moiminfo":True}
         header = {
             "Accept": "text/html, application/xhtml+xml, image/jxr, */*",
@@ -107,18 +107,21 @@ class RequestHandle:
         header["Content-Length"] = str(len("id={}&limit_num=-1&moiminfo=true".format(article["id"])))
         response = self.MainWindow.req.post("https://www.everytime.kr/find/board/comment/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
-        if nickname is None:
+        if option is None:
             result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"is_mine":"1"})))
-        elif nickname is False:
-            result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll(lambda tag:tag.name=="comment" and tag["id"] != "0")))
         else:
-            result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"user_nickname":nickname})))
+            if option["all"]:
+                result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll(lambda tag:tag.name=="comment" and tag["id"] != "0")))
+            else:
+                result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"user_nickname":option["nickname"]})))
+            if option["commentKeywordFlag"]:
+                result = list(filter(lambda comment:option["commentKeyword"] in comment["comment"]["text"], result))
         if "board_id" in article:
             for comment in result:
                 comment["board"] = article["board_id"]
         return result
 
-    def searchArticle(self, _id, page):
+    def searchArticle(self, _id, page, option=None):
         data = {"id":_id, "limit_num":20, "start_num":page*20}
         header = {
             "Accept": "text/html, application/xhtml+xml, image/jxr, */*",
@@ -133,10 +136,13 @@ class RequestHandle:
         header["Content-Length"] = str(len("id={}&limit_num=20&start_num={}".format(_id, page*20)))
         response = self.MainWindow.req.post("https://www.everytime.kr/find/board/article/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
-        if _id == "myarticle" or _id == "mycommentarticle":
+        if option is None:
             return soup.findAll("article")
         else:
-            return list(map(lambda article:{"board":_id, "article":article}, soup.findAll("article")))
+            if option["articleKeywordFlag"]:
+                return list(map(lambda article:{"board":_id, "article":article}, soup.findAll("article")))
+            else:
+                return list(map(lambda article:{"board":_id, "article":article}, soup.findAll("article")))
 
     def postComment(self, article, string, isAnonym):
         header = {
@@ -346,18 +352,18 @@ class RequestHandle:
         mult = 0
         page = option["page"] - 1 + mult*threadCount + number
         while page <= option["pageEnd"] - 1:
-            articles = self.searchArticle(boardId, page)
+            articles = self.searchArticle(boardId, page, option)
             if option["commentFlag"]:
                 for article in articles:
-                    if option["all"]:
-                        comments = self.searchComment(article["article"], False)
-                    else:
-                        comments = self.searchComment(article["article"], option["nickname"])
+                    comments = self.searchComment(article["article"], option)
                     for comment in comments:
                         comment["board"] = boardId
                     others["comment"].extend(comments)
             if not option["all"]:
                 articles = list(filter(lambda article:article["article"]["user_nickname"] == option["nickname"], articles))
+            if option["articleKeywordFlag"]:
+                articles = list(filter(lambda article:option["articleKeyword"] in article["article"]["title"] or \
+                option["articleKeyword"] in article["article"]["text"], articles))
             if option["articleFlag"]:
                 others["article"].extend(articles)
             if self.MainWindow.printBoardSearchEndFlag and (page) % 10 == 0 and (page) > 0 :

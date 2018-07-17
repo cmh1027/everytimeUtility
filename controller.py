@@ -194,6 +194,10 @@ class Slot(QObject):
         articleCheckFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "articleCheckBox").isChecked()
         commentCheckFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "commentCheckBox").isChecked()
         searchAllFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "allCheckBox").isChecked()
+        articleKeyword = self.MainWindow.findChild(QtWidgets.QLineEdit, "articlekeywordLineEdit").text()
+        commentKeyword = self.MainWindow.findChild(QtWidgets.QLineEdit, "commentkeywordLineEdit").text()
+        articleKeywordFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "articlekeywordCheckBox").isChecked()
+        commentKeywordFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "commentkeywordCheckBox").isChecked()
         if not articleCheckFlag and not commentCheckFlag:
             self.MainWindow.Render.messageDialog("error", "글 혹은 댓글 검색 중 적어도 하나를 체크해주세요")
             return
@@ -209,6 +213,12 @@ class Slot(QObject):
         if searchNickname == "" and not searchAllFlag:
             self.MainWindow.Render.messageDialog("error", "닉네임을 입력해주세요")
             return
+        if articleKeyword == "" and articleKeywordFlag:
+            self.MainWindow.Render.messageDialog("error", "글 키워드를 입력해주세요")
+            return
+        if commentKeyword == "" and commentKeywordFlag:
+            self.MainWindow.Render.messageDialog("error", "댓글 키워드를 입력해주세요")
+            return            
         self.MainWindow.searchPage = searchPage
         self.MainWindow.searchEndPage = searchEndPage
         self.MainWindow.searchNickname = searchNickname
@@ -216,6 +226,10 @@ class Slot(QObject):
         self.MainWindow.commentCheckFlag = commentCheckFlag
         self.MainWindow.searchAllFlag = searchAllFlag
         self.MainWindow.others = {}
+        self.MainWindow.articleKeyword = articleKeyword
+        self.MainWindow.commentKeyword = commentKeyword
+        self.MainWindow.articleKeywordFlag = articleKeywordFlag
+        self.MainWindow.commentKeywordFlag = commentKeywordFlag
         btn = self.MainWindow.findChild(QtWidgets.QPushButton, "searchButton")
         self.MainWindow.Render.disableButton(btn, "검색중")
         self.MainWindow.searchingOthers = True
@@ -228,6 +242,10 @@ class Slot(QObject):
         option["articleFlag"] = articleCheckFlag
         option["commentFlag"] = commentCheckFlag
         option["all"] = searchAllFlag
+        option["articleKeyword"] = articleKeyword
+        option["commentKeyword"] = commentKeyword
+        option["articleKeywordFlag"] = articleKeywordFlag
+        option["commentKeywordFlag"] = commentKeywordFlag
         self.MainWindow.RequestHandle.searchOthers(option)
 
     @pyqtSlot()
