@@ -289,7 +289,9 @@ class Slot(QObject):
 
     @pyqtSlot()
     def savePlasterWord(self, dialog):
-        self.MainWindow.plasterWord = dialog.findChild(QtWidgets.QTextEdit, "plasterwordTextEdit").toPlainText().split("\n")
+        plasterWord = dialog.findChild(QtWidgets.QTextEdit, "plasterwordTextEdit").toPlainText().split("\n")
+        plasterWord = list(map(lambda word:word.strip(), list(filter(lambda word:word!='', plasterWord))))
+        self.MainWindow.plasterWord = plasterWord
         dialog.deleteLater()
     
     @pyqtSlot()
