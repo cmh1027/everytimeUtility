@@ -260,6 +260,8 @@ class Render:
         self.MainWindow.findChild(QtWidgets.QCheckBox, "isanonymFlag").setChecked(self.MainWindow.isAnonymFlag)
         self.MainWindow.findChild(QtWidgets.QLineEdit, "iterationLineEdit").setText(str(self.MainWindow.plasterIteration))
         self.MainWindow.findChild(QtWidgets.QLineEdit, "retryLineEdit").setText(str(self.MainWindow.plasterRetry))
+        self.MainWindow.findChild(QtWidgets.QRadioButton, "articleRadioButton").setChecked(self.MainWindow.articleCycleFlag)
+        self.MainWindow.findChild(QtWidgets.QRadioButton, "stringRadioButton").setChecked(not self.MainWindow.articleCycleFlag)
         if self.MainWindow.searchAllFlag:
             self.MainWindow.findChild(QtWidgets.QLabel, "searchednicknameLabel").setText("모두")
         else:

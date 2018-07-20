@@ -17,20 +17,20 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>3</y>
+     <y>0</y>
      <width>231</width>
-     <height>214</height>
+     <height>221</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
-     <number>4</number>
+     <number>0</number>
     </property>
     <property name="leftMargin">
      <number>5</number>
     </property>
     <property name="rightMargin">
-     <number>5</number>
+     <number>0</number>
     </property>
     <property name="bottomMargin">
      <number>0</number>
@@ -42,6 +42,18 @@
       </property>
       <item>
        <widget class="QLabel" name="searchednicknameLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>28</height>
+         </size>
+        </property>
         <property name="font">
          <font>
           <family>맑은 고딕</family>
@@ -68,8 +80,14 @@
       <property name="leftMargin">
        <number>10</number>
       </property>
+      <property name="topMargin">
+       <number>2</number>
+      </property>
       <property name="rightMargin">
        <number>15</number>
+      </property>
+      <property name="bottomMargin">
+       <number>2</number>
       </property>
       <item>
        <widget class="QPushButton" name="selectboardButton">
@@ -144,76 +162,90 @@
      </layout>
     </item>
     <item>
-     <widget class="QCheckBox" name="articleplasterCheckBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <property name="leftMargin">
+       <number>15</number>
       </property>
-      <property name="font">
-       <font>
-        <family>굴림</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>게시글</string>
-      </property>
-     </widget>
+      <item>
+       <widget class="QCheckBox" name="articleplasterCheckBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>굴림</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>게시글</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="commentplasterCheckBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>굴림</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>댓글</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
-     <widget class="QCheckBox" name="commentplasterCheckBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <property name="leftMargin">
+       <number>15</number>
       </property>
-      <property name="font">
-       <font>
-        <family>굴림</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>댓글</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="promptremoveCheckBox">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <family>굴림</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>즉시 삭제(추천)</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QCheckBox" name="isanonymFlag">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="font">
-       <font>
-        <family>굴림</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>익명으로 쓰기 (추천)</string>
-      </property>
-     </widget>
+      <item>
+       <widget class="QCheckBox" name="promptremoveCheckBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>굴림</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>즉시 삭제</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="isanonymFlag">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>굴림</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>익명</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -229,7 +261,7 @@
       <item>
        <widget class="QLabel" name="label_3">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -263,6 +295,12 @@
       </item>
       <item>
        <widget class="QLabel" name="label_4">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>번</string>
         </property>
@@ -284,7 +322,7 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -318,9 +356,51 @@
       </item>
       <item>
        <widget class="QLabel" name="label_6">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>번</string>
         </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_7">
+      <property name="leftMargin">
+       <number>4</number>
+      </property>
+      <item>
+       <widget class="QRadioButton" name="articleRadioButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>글 기준</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">cycleGroup</string>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="stringRadioButton">
+        <property name="text">
+         <string>문자열 기준</string>
+        </property>
+        <attribute name="buttonGroup">
+         <string notr="true">cycleGroup</string>
+        </attribute>
        </widget>
       </item>
      </layout>
@@ -395,9 +475,10 @@
     </item>
    </layout>
   </widget>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>label_6</zorder>
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="cycleGroup"/>
+ </buttongroups>
 </ui>

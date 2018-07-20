@@ -64,6 +64,7 @@ class Window(QtWidgets.QMainWindow):
         self.plasterIteration = 1
         self.plasterRetry = 4
         self.plasterInterval = 4
+        self.articleCycleFlag = True
 
 
 class MessageDialog(QtWidgets.QDialog):

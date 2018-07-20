@@ -422,12 +422,14 @@ class RequestHandle:
         else:
             return False
     
-    def plasterTarget(self, option):
+    def articleCyclePlaster(self, option):
         iteration = 0
         wordIndex = 0
+        deletedArticles = []
+        deletedComments = []
         while iteration < option["iteration"]:
-            deletedArticles = []
-            deletedComments = []
+            deletedArticles.clear()
+            deletedComments.clear()
             if option["articleFlag"]:
                 for index, article in enumerate(option["article"]):
                     while True:
@@ -489,6 +491,99 @@ class RequestHandle:
                 for comment in deletedComments:
                     option["comment"].remove(comment)
             iteration = iteration + 1
+    
+    def stringCyclePlaster(self, option):
+        iteration = 0
+        articleIndex = 0
+        commentIndex = 0
+        currentIndex = 0
+        deletedArticles = []
+        deletedComments = []
+        while iteration < option["iteration"]:
+            deletedArticles.clear()
+            deletedComments.clear()
+            if option["articleFlag"]:
+                for index, word in enumerate(option["plasterWord"]):
+                    if index < currentIndex:
+                        continue
+                    while True:
+                        retry = 0
+                        article = option["article"][articleIndex]
+                        response = self.postComment(article["article"], word, option["anonym"])
+                        if response != 0 and response != -1:
+                            if option["delete"]:
+                                self.deleteComment(response)
+                            if self.MainWindow.printPlasterFlag:
+                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
+                                article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))
+                            break
+                        if response == 0:
+                            if self.MainWindow.printPlasterFlag:
+                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
+                                article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))  
+                            deletedArticles.append(article)
+                            break
+                        if response == -1:
+                            if self.MainWindow.printPlasterFlag:
+                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
+                                article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))
+                            retry = retry + 1
+                            if retry > option["retry"]:
+                                break
+                    articleIndex += 1
+                    currentIndex = index + 1
+                    if articleIndex == len(option["article"]):
+                        articleIndex = 0
+                        break
+                    time.sleep(option["interval"])
+            if option["commentFlag"]:
+                for index, word in enumerate(option["plasterWord"]):
+                    if index < currentIndex:
+                        continue
+                    while True:
+                        retry = 0
+                        comment = option["comment"][commentIndex]
+                        response = self.postSubcomment(comment["comment"], word, option["anonym"])
+                        if response != 0 and response != -1:
+                            if option["delete"]:
+                                self.deleteComment(response)
+                            if self.MainWindow.printPlasterFlag:
+                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
+                                comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
+                            break
+                        if response == 0:
+                            if self.MainWindow.printPlasterFlag:
+                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
+                                comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
+                            deletedComments.append(comment)
+                            break
+                        if response == -1:
+                            if self.MainWindow.printPlasterFlag:
+                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
+                                comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
+                            retry = retry + 1
+                            if retry > option["retry"]:
+                                break
+                    currentIndex = index + 1
+                    if commentIndex == len(option["comment"]):
+                        commentIndex = 0
+                        break
+                    time.sleep(option["interval"])
+            if option["articleFlag"]:
+                for article in deletedArticles:
+                    option["article"].remove(article)
+            if option["commentFlag"]:
+                for comment in deletedComments:
+                    option["comment"].remove(comment)
+            if currentIndex == len(option["plasterWord"]):
+                iteration += 1
+                currentIndex = 0
+
+    def plasterTarget(self, option):
+        if option["articleCycle"] is True:
+            self.articleCyclePlaster(option)
+        else:
+            self.stringCyclePlaster(option)
         self.MainWindow.Slot.plasterEndSignal.emit()
 
     def plaster(self, option):
