@@ -60,7 +60,7 @@ class Window(QtWidgets.QMainWindow):
         self.commentPlasterFlag = True
         self.promptRemoveFlag = True
         self.isAnonymFlag = True
-        self.printPlasterFlag = False
+        self.printPlasterFlag = True
         self.plasterIteration = 1
         self.plasterRetry = 4
         self.plasterInterval = 4

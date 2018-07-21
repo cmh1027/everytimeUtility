@@ -432,8 +432,8 @@ class RequestHandle:
             deletedComments.clear()
             if option["articleFlag"]:
                 for index, article in enumerate(option["article"]):
+                    retry = 0
                     while True:
-                        retry = 0
                         response = self.postComment(article["article"], option["plasterWord"][wordIndex], option["anonym"])
                         if response != 0 and response != -1:
                             if option["delete"]:
@@ -455,12 +455,13 @@ class RequestHandle:
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
+                            time.sleep(option["interval"])
                     wordIndex = (wordIndex + 1) % len(option["plasterWord"])
                     time.sleep(option["interval"])
             if option["commentFlag"]:
                 for index, comment in enumerate(option["comment"]):
+                    retry = 0
                     while True:
-                        retry = 0
                         response = self.postSubcomment(comment["comment"], option["plasterWord"][wordIndex], option["anonym"])
                         if response != 0 and response != -1:
                             if option["delete"]:
@@ -482,6 +483,7 @@ class RequestHandle:
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
+                            time.sleep(option["interval"])
                     wordIndex = (wordIndex + 1) % len(option["plasterWord"])
                     time.sleep(option["interval"])
             if option["articleFlag"]:
@@ -506,8 +508,8 @@ class RequestHandle:
                 for index, word in enumerate(option["plasterWord"]):
                     if index < currentIndex:
                         continue
+                    retry = 0
                     while True:
-                        retry = 0
                         article = option["article"][articleIndex]
                         response = self.postComment(article["article"], word, option["anonym"])
                         if response != 0 and response != -1:
@@ -530,6 +532,7 @@ class RequestHandle:
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
+                            time.sleep(option["interval"])
                     articleIndex += 1
                     currentIndex = index + 1
                     if articleIndex == len(option["article"]):
@@ -540,8 +543,8 @@ class RequestHandle:
                 for index, word in enumerate(option["plasterWord"]):
                     if index < currentIndex:
                         continue
+                    retry = 0
                     while True:
-                        retry = 0
                         comment = option["comment"][commentIndex]
                         response = self.postSubcomment(comment["comment"], word, option["anonym"])
                         if response != 0 and response != -1:
@@ -564,6 +567,7 @@ class RequestHandle:
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
+                            time.sleep(option["interval"])
                     commentIndex += 1
                     currentIndex = index + 1
                     if commentIndex == len(option["comment"]):
