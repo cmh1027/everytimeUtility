@@ -302,7 +302,7 @@ class Slot(QObject):
         isAnonymFlag = self.MainWindow.findChild(QtWidgets.QCheckBox, "isanonymFlag").isChecked()
         plasterIteration = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "iterationLineEdit").text())
         plasterRetry = int(self.MainWindow.findChild(QtWidgets.QLineEdit, "retryLineEdit").text())
-        articleCycle = self.MainWindow.findChild(QtWidgets.QRadioButton, "articleRadioButton").isChecked()
+        articleCycleFlag = self.MainWindow.findChild(QtWidgets.QRadioButton, "articleRadioButton").isChecked()
         if not articlePlasterFlag and not commentPlasterFlag:
             self.MainWindow.Render.messageDialog("error", "글 혹은 댓글 도배 중 적어도 하나를 체크해주세요")
             return
@@ -324,7 +324,7 @@ class Slot(QObject):
         option["plasterWord"] = list(self.MainWindow.plasterWord)
         option["retry"] = plasterRetry
         option["interval"] = self.MainWindow.plasterInterval
-        option["articleCycle"] = articleCycle
+        option["articleCycle"] = articleCycleFlag
         if "article" in self.MainWindow.others:
             option["article"] = list(filter(lambda article:article["board"] in \
             self.MainWindow.plasterBoards.values(), self.MainWindow.others["article"]))
@@ -343,7 +343,7 @@ class Slot(QObject):
         self.MainWindow.promptRemoveFlag = promptRemoveFlag
         self.MainWindow.isAnonymFlag = isAnonymFlag
         self.MainWindow.plasterIteration = plasterIteration
-        self.MainWindow.articleCycle = articleCycle
+        self.MainWindow.articleCycleFlag = articleCycleFlag
         btn = self.MainWindow.findChild(QtWidgets.QPushButton, "startplatsterButton")
         self.MainWindow.Render.disableButton(btn, "도배중")
         self.MainWindow.Render.addTextEdit("[System] 도배를 시작합니다")
