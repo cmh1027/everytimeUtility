@@ -442,13 +442,13 @@ class RequestHandle:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["article"])))
                             break
-                        if response == 0:
+                        elif response == 0:
                             if self.MainWindow.printPlasterFlag:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["article"])))  
                             deletedArticles.append(article)
                             break
-                        if response == -1:
+                        elif response == -1:
                             if self.MainWindow.printPlasterFlag:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["article"])))
@@ -470,13 +470,13 @@ class RequestHandle:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["comment"])))
                             break
-                        if response == 0:
+                        elif response == 0:
                             if self.MainWindow.printPlasterFlag:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["comment"])))
                             deletedComments.append(comment)
                             break
-                        if response == -1:
+                        elif response == -1:
                             if self.MainWindow.printPlasterFlag:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["comment"])))
@@ -519,13 +519,13 @@ class RequestHandle:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))
                             break
-                        if response == 0:
+                        elif response == 0:
                             if self.MainWindow.printPlasterFlag:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))  
                             deletedArticles.append(article)
                             break
-                        if response == -1:
+                        elif response == -1:
                             if self.MainWindow.printPlasterFlag:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))
@@ -535,10 +535,10 @@ class RequestHandle:
                             time.sleep(option["interval"])
                     articleIndex += 1
                     currentIndex = index + 1
+                    time.sleep(option["interval"])
                     if articleIndex == len(option["article"]):
                         articleIndex = 0
                         break
-                    time.sleep(option["interval"])
             if option["commentFlag"]:
                 for index, word in enumerate(option["plasterWord"]):
                     if index < currentIndex:
@@ -554,13 +554,13 @@ class RequestHandle:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
                             break
-                        if response == 0:
+                        elif response == 0:
                             if self.MainWindow.printPlasterFlag:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
                             deletedComments.append(comment)
                             break
-                        if response == -1:
+                        elif response == -1:
                             if self.MainWindow.printPlasterFlag:
                                 self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
@@ -570,10 +570,10 @@ class RequestHandle:
                             time.sleep(option["interval"])
                     commentIndex += 1
                     currentIndex = index + 1
+                    time.sleep(option["interval"])
                     if commentIndex == len(option["comment"]):
                         commentIndex = 0
                         break
-                    time.sleep(option["interval"])
             if option["articleFlag"]:
                 for article in deletedArticles:
                     option["article"].remove(article)
