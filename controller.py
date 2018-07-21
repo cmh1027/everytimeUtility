@@ -332,8 +332,8 @@ class Slot(QObject):
                 self.MainWindow.Render.messageDialog("error", "검색된 글이 없습니다")
                 return
         if "comment" in self.MainWindow.others:
-            option["comment"] = list(filter(lambda article:article["board"] in \
-            self.MainWindow.plasterBoards.values(), self.MainWindow.others["article"]))
+            option["comment"] = list(filter(lambda comment:comment["board"] in \
+            self.MainWindow.plasterBoards.values(), self.MainWindow.others["comment"]))
             if len(option["comment"]) == 0:
                 self.MainWindow.Render.messageDialog("error", "검색된 댓글이 없습니다")
                 return

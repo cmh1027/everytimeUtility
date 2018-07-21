@@ -564,6 +564,7 @@ class RequestHandle:
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
+                    commentIndex += 1
                     currentIndex = index + 1
                     if commentIndex == len(option["comment"]):
                         commentIndex = 0
@@ -572,9 +573,15 @@ class RequestHandle:
             if option["articleFlag"]:
                 for article in deletedArticles:
                     option["article"].remove(article)
+                if len(option["article"]) == 0:
+                    option["articleFlag"] = False
             if option["commentFlag"]:
                 for comment in deletedComments:
                     option["comment"].remove(comment)
+                if len(option["comment"]) == 0:
+                    option["commentFlag"] = False
+            if not option["articleFlag"] and not option["commentFlag"]:
+                return
             if currentIndex == len(option["plasterWord"]):
                 iteration += 1
                 currentIndex = 0
