@@ -38,6 +38,9 @@ class Slot(QObject):
 
     @pyqtSlot()
     def logout(self):
+        self.abortSearch()
+        self.abortDelete()
+        self.abortPlaster()
         self.MainWindow.RequestHandle.logout()
         self.MainWindow.initialize()
         self.MainWindow.Render.login()
