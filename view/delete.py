@@ -2,8 +2,8 @@ import view.ui.delete as delete
 from view.excludeWordDialog import ExcludeWordDialog
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from data import Data
-from config import Config
+from model.data import Data
+from model.config import Config
 import view.detail as Detail
 
 class Delete(QtWidgets.QWidget):

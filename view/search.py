@@ -1,8 +1,8 @@
 import view.ui.search as search
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
-from data import Data
-from config import Config
+from model.data import Data
+from model.config import Config
 from view.selectBoardDialog import SelectBoardDialog
 import view.detail as Detail
 

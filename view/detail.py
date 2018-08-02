@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtWidgets
 import view.ui.detail as detail
-from data import Data
+from model.data import Data
 from PyQt5.QtCore import pyqtSlot
 
 class OthersDetail(QtWidgets.QDialog):

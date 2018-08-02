@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 import view.ui.plasterWordDialog as plasterWordDialog
-from config import Config
-from data import Data
+from model.config import Config
+from model.data import Data
 from PyQt5.QtCore import pyqtSlot
 
 class PlasterWordDialog(QtWidgets.QDialog):

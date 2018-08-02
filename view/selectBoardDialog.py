@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 import view.ui.selectBoardDialog as selectBoardDialog
-from config import Config
-from data import Data
+from model.config import Config
+from model.data import Data
 from PyQt5.QtCore import pyqtSlot
 
 class SelectBoardDialog(QtWidgets.QDialog):

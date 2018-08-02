@@ -9,14 +9,14 @@ from view.search import Search
 from view.plaster import Plaster
 from view.loading import Loading
 from view.messageDialog import MessageDialog
-from data import Data
-from config import Config
+from model.data import Data
+from model.config import Config
+from module.requesthandle import RequestHandle
 
 class Window(QtWidgets.QMainWindow):
     addProgressSignal = pyqtSignal(str)
     def __init__(self):
         super().__init__()
-        from requesthandle import RequestHandle
         self.RequestHandle = RequestHandle(self)
         self.addProgressSignal.connect(self.addProgress)
         self.initialize()

@@ -1,7 +1,7 @@
 import view.ui.configuration as configuration
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import pyqtSlot
-from config import Config
+from model.config import Config
 class Configuration(QtWidgets.QWidget):
     def __init__(self, window):
         super().__init__()

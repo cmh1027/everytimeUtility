@@ -1,6 +1,6 @@
 import view.ui.excludeWordDialog as excludeWordDialog
 from PyQt5 import QtWidgets
-from config import Config
+from model.config import Config
 from PyQt5.QtCore import pyqtSlot
 
 class ExcludeWordDialog(QtWidgets.QDialog):
