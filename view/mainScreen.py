@@ -186,7 +186,7 @@ class Ui_MainWindow(object):
         self.logoutButton.setStyleSheet("background-color:rgb(255, 106, 121)")
         self.logoutButton.setObjectName("logoutButton")
         self.menuLayout.addWidget(self.logoutButton)
-        self.Form = QtWidgets.QWidget(self.centralwidget)
+        self.Form = QtWidgets.QStackedWidget(self.centralwidget)
         self.Form.setGeometry(QtCore.QRect(140, 0, 231, 223))
         self.Form.setStyleSheet("background-color:rgb(208, 206, 255)")
         self.Form.setObjectName("Form")

@@ -352,7 +352,7 @@
          </font>
         </property>
         <property name="text">
-         <string>글 121개 / 댓글 156개</string>
+         <string/>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

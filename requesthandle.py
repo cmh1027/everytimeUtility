@@ -1,9 +1,15 @@
 from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+import urllib3
 import requests
 import datetime
 from urllib import parse
 import time
 from PyQt5.QtCore import QThread
+from config import Config
+from data import Data
 
 class CustomThread(QThread):
     def __init__(self, target, callback, prop, args=()):
@@ -20,7 +26,12 @@ class CustomThread(QThread):
 class RequestHandle:
     def __init__(self, MainWindow):
         self.MainWindow = MainWindow
-        self.threads = {"searchMine":{}, "delete":{}, "searchOthers":{}, "plaster":{}} 
+        self.threads = {"searchMine":{}, "delete":{}, "searchOthers":{}, "plaster":{}}
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        with requests.Session() as self.req:
+            retry = Retry(connect=4, backoff_factor=0.3)
+            adapter = HTTPAdapter(max_retries=retry)
+            self.req.mount('https://www.everytime.kr', adapter)
     
     def threadFinished(self, thread, prop):
         if thread in self.threads[prop]:
@@ -41,7 +52,7 @@ class RequestHandle:
             "Cache-Control": "no-cache"
         }
         header["Content-Length"] = str(len("userid={}&password={}&redirect=%2F".format(data["userid"], data["password"])))
-        response = self.MainWindow.req.post("https://www.everytime.kr/user/login", data=data, headers=header, verify=False)
+        response = self.req.post("https://www.everytime.kr/user/login", data=data, headers=header, verify=False)
         if response.text.find('<p class="nickname">') == -1:
             return False
         else:
@@ -58,7 +69,7 @@ class RequestHandle:
             "Connection": "Keep-Alive",
             "Cache-Control": "no-cache"
         }
-        self.MainWindow.req.get("https://www.everytime.kr/user/logout", headers=header)
+        self.req.get("https://www.everytime.kr/user/logout", headers=header)
     
     def extractBoards(self, response):
         result = {}
@@ -105,7 +116,7 @@ class RequestHandle:
             "Cache-Control": "no-cache"
         }
         header["Content-Length"] = str(len("id={}&limit_num=-1&moiminfo=true".format(article["id"])))
-        response = self.MainWindow.req.post("https://www.everytime.kr/find/board/comment/list", data=data, headers=header)
+        response = self.req.post("https://www.everytime.kr/find/board/comment/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         if option is None:
             result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"is_mine":"1"})))
@@ -134,7 +145,7 @@ class RequestHandle:
             "Cache-Control": "no-cache"
         }
         header["Content-Length"] = str(len("id={}&limit_num=20&start_num={}".format(_id, page*20)))
-        response = self.MainWindow.req.post("https://www.everytime.kr/find/board/article/list", data=data, headers=header)
+        response = self.req.post("https://www.everytime.kr/find/board/article/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         if option is None:
             return soup.findAll("article")
@@ -158,7 +169,7 @@ class RequestHandle:
         }
         header["Content-Length"] = str(len("text={}&is_anonym={}&id={}".format(parse.quote(string.encode('utf-8')), int(isAnonym), article["id"]))) 
         data = {"text":string.encode('utf-8'), "is_anonym":"1", "id":article["id"]}
-        response = self.MainWindow.req.post("https://www.everytime.kr/save/board/comment", data=data, headers=header)
+        response = self.req.post("https://www.everytime.kr/save/board/comment", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         return int(soup.find("response").text)
 
@@ -176,7 +187,7 @@ class RequestHandle:
         }
         header["Content-Length"] = str(len("text={}&is_anonym={}&comment_id={}".format(parse.quote(string.encode('utf-8')), int(isAnonym), comment["id"])))  
         data = {"text":string.encode('utf-8'), "is_anonym":"1", "comment_id": comment["id"]}
-        response = self.MainWindow.req.post("https://www.everytime.kr/save/board/comment", data=data, headers=header)
+        response = self.req.post("https://www.everytime.kr/save/board/comment", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         return int(soup.find("response").text)
 
@@ -226,11 +237,11 @@ class RequestHandle:
         
         # sorted(articles, key=lambda article:article["id"], reverse=True)
         # sorted(comments, key=lambda comment:comment["id"], reverse=True)
-        self.MainWindow.mine = {"article":articles, "comment":comments}
-        self.MainWindow.Slot.searchMineEndSignal.emit()
+        Data.mine = {"article":articles, "comment":comments}
+        self.MainWindow.Delete.searchMineEndSignal.emit()
     
     def getMine(self):
-        thread = CustomThread(self.getMineTarget, self.threadFinished, "searchMine", (self.MainWindow.threadCount))
+        thread = CustomThread(self.getMineTarget, self.threadFinished, "searchMine", (Config.All.threadCount))
         self.threads["searchMine"][thread] = thread
         thread.start()
     
@@ -247,7 +258,7 @@ class RequestHandle:
             "Cache-Control": "no-cache"
         }
         header["Content-Length"] = str(len("id={}".format(_id)))
-        response = self.MainWindow.req.post("https://www.everytime.kr/remove/board/article", data={"id":_id})
+        response = self.req.post("https://www.everytime.kr/remove/board/article", data={"id":_id})
         soup = BeautifulSoup(response.text, 'html.parser')
         if int(soup.find("response").text) == 1:
             return True
@@ -267,7 +278,7 @@ class RequestHandle:
             "Cache-Control": "no-cache"
         }
         header["Content-Length"] = str(len("id={}".format(_id)))
-        response = self.MainWindow.req.post("https://www.everytime.kr/remove/board/comment", data={"id":_id})
+        response = self.req.post("https://www.everytime.kr/remove/board/comment", data={"id":_id})
         soup = BeautifulSoup(response.text, 'html.parser')
         if int(soup.find("response").text) == 1:
             return True
@@ -281,16 +292,16 @@ class RequestHandle:
                 string = "[글삭제] "
             else: 
                 string = "[글삭제 실패] "
-            if self.MainWindow.printIdFlag:
+            if Config.Delete.printIdFlag:
                 string += item["id"]
-            if self.MainWindow.printTextFlag:
+            if Config.Delete.printTextFlag:
                 string += " " + Util.omitString(item["title"])
-            if self.MainWindow.printOriginFlag:
+            if Config.Delete.printOriginFlag:
                 string += "\n" + "https://www.everytime.kr/{}/v/{} ".format(item["board_id"], item["id"])
             else:
                 string += "\n"
             string += "{}/{}".format(number + threadCount * index + 1, articleLen)
-            self.MainWindow.Slot.addProgressSignal.emit(string)
+            self.MainWindow.addProgressSignal.emit(string)
 
     def deleteMyComments(self, comments, number, threadCount, commentLen):
         for index, item in enumerate(comments):
@@ -299,16 +310,16 @@ class RequestHandle:
                 string = "[댓글삭제] "
             else: 
                 string = "[댓글삭제 실패] "
-            if self.MainWindow.printIdFlag:
+            if Config.Delete.printIdFlag:
                 string += item["comment"]["id"]
-            if self.MainWindow.printTextFlag:
+            if Config.Delete.printTextFlag:
                 string += " " + Util.omitString(item["comment"]["text"])
-            if self.MainWindow.printOriginFlag:
+            if Config.Delete.printOriginFlag:
                 string += "\n" + "https://www.everytime.kr/{}/v/{} ".format(item["article"]["board_id"], item["article"]["id"])
             else:
                 string += "\n"
             string += "{}/{}".format(number + threadCount * index + 1, commentLen)
-            self.MainWindow.Slot.addProgressSignal.emit(string)
+            self.MainWindow.addProgressSignal.emit(string)
            
     def deleteMineTarget(self, threadCount, option):
         def threadedDeleteMyArticles(articles):
@@ -335,15 +346,15 @@ class RequestHandle:
                 thread.start()
             for thread in threads:
                 thread.wait()
-        result = Util.filterMine(self.MainWindow.mine, option)
+        result = Util.filterMine(Data.mine, option)
         if option["articleFlag"]:
             threadedDeleteMyArticles(result["article"])
         if option["commentFlag"]:
             threadedDeleteMyComments(result["comment"])
-        self.MainWindow.Slot.deleteEndSignal.emit()
+        self.MainWindow.Delete.deleteEndSignal.emit()
 
     def deleteMine(self, option):
-        thread = CustomThread(self.deleteMineTarget, self.threadFinished, "delete", (self.MainWindow.threadCount, option))
+        thread = CustomThread(self.deleteMineTarget, self.threadFinished, "delete", (Config.All.threadCount, option))
         self.threads["delete"][thread] = thread
         thread.start()
     
@@ -374,8 +385,8 @@ class RequestHandle:
                 option["articleKeyword"] in article["article"]["text"], articles))
             if option["articleFlag"]:
                 others["article"].extend(articles)
-            if self.MainWindow.printBoardSearchEndFlag and (page) % 10 == 0 and (page) > 0 :
-                self.MainWindow.Slot.addProgressSignal.emit("[System] {} 페이지 검색 완료".format(page))
+            if Config.Search.printBoardSearchEndFlag and (page) % 10 == 0 and (page) > 0 :
+                self.MainWindow.addProgressSignal.emit("[System] {} 페이지 검색 완료".format(page))
             mult = mult+1
             page = option["page"] - 1 + mult*threadCount + number
 
@@ -393,23 +404,23 @@ class RequestHandle:
             for thread in threads:
                 thread.wait()
         if option["articleFlag"]:
-            self.MainWindow.others["article"] = []
+            Data.others["article"] = []
         if option["commentFlag"]:
-            self.MainWindow.others["comment"] = []
+            Data.others["comment"] = []
         for board, boardId in option["boards"].items():
-            if self.MainWindow.printBoardSearchEndFlag:
-                self.MainWindow.Slot.addProgressSignal.emit("[System] {} 검색 시작".format(board))
-            threadedSearch(boardId, self.MainWindow.others)
-            if self.MainWindow.printBoardSearchEndFlag:
-                self.MainWindow.Slot.addProgressSignal.emit("[System] {} 검색 완료".format(board))
+            if Config.Search.printBoardSearchEndFlag:
+                self.MainWindow.addProgressSignal.emit("[System] {} 검색 시작".format(board))
+            threadedSearch(boardId, Data.others)
+            if Config.Search.printBoardSearchEndFlag:
+                self.MainWindow.addProgressSignal.emit("[System] {} 검색 완료".format(board))
         if option["articleFlag"]:
-            self.MainWindow.others["article"] = sorted(self.MainWindow.others["article"], key=Util.comparator(Util.articleDateCompare), reverse=True)
+            Data.others["article"] = sorted(Data.others["article"], key=Util.comparator(Util.articleDateCompare), reverse=True)
         if option["commentFlag"]:
-            self.MainWindow.others["comment"] = sorted(self.MainWindow.others["comment"], key=Util.comparator(Util.commentDateCompare), reverse=True)
-        self.MainWindow.Slot.searchOthersEndSignal.emit()
+            Data.others["comment"] = sorted(Data.others["comment"], key=Util.comparator(Util.commentDateCompare), reverse=True)
+        self.MainWindow.Search.searchOthersEndSignal.emit()
 
     def searchOthers(self, option):
-        thread = CustomThread(self.searchOthersTarget, self.threadFinished, "searchOthers", (self.MainWindow.threadCount, option))
+        thread = CustomThread(self.searchOthersTarget, self.threadFinished, "searchOthers", (Config.All.threadCount, option))
         self.threads["searchOthers"][thread] = thread
         thread.start()
 
@@ -438,19 +449,19 @@ class RequestHandle:
                         if response != 0 and response != -1:
                             if option["delete"]:
                                 self.deleteComment(response)
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["article"])))
                             break
                         elif response == 0:
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["article"])))  
                             deletedArticles.append(article)
                             break
                         elif response == -1:
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["article"])))
                             retry = retry + 1
                             if retry > option["retry"]:
@@ -466,19 +477,19 @@ class RequestHandle:
                         if response != 0 and response != -1:
                             if option["delete"]:
                                 self.deleteComment(response)
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["comment"])))
                             break
                         elif response == 0:
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["comment"])))
                             deletedComments.append(comment)
                             break
                         elif response == -1:
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["comment"])))
                             retry = retry + 1
                             if retry > option["retry"]:
@@ -515,19 +526,19 @@ class RequestHandle:
                         if response != 0 and response != -1:
                             if option["delete"]:
                                 self.deleteComment(response)
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))
                             break
                         elif response == 0:
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))  
                             deletedArticles.append(article)
                             break
                         elif response == -1:
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
                                 article["board"], article["article"]["id"], index+1, len(option["plasterWord"])))
                             retry = retry + 1
                             if retry > option["retry"]:
@@ -550,19 +561,19 @@ class RequestHandle:
                         if response != 0 and response != -1:
                             if option["delete"]:
                                 self.deleteComment(response)
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
                             break
                         elif response == 0:
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
                             deletedComments.append(comment)
                             break
                         elif response == -1:
-                            if self.MainWindow.printPlasterFlag:
-                                self.MainWindow.Slot.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
+                            if Config.Plaster.printPlasterFlag:
+                                self.MainWindow.addProgressSignal.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
                                 comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])))
                             retry = retry + 1
                             if retry > option["retry"]:
@@ -595,7 +606,7 @@ class RequestHandle:
             self.articleCyclePlaster(option)
         else:
             self.stringCyclePlaster(option)
-        self.MainWindow.Slot.plasterEndSignal.emit()
+        self.MainWindow.Plaster.plasterEndSignal.emit()
 
     def plaster(self, option):
         thread = CustomThread(self.plasterTarget, self.threadFinished, "plaster", (option))

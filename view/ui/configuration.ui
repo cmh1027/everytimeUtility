@@ -137,6 +137,9 @@
       <property name="text">
        <string>ID 출력</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item>
@@ -144,12 +147,18 @@
       <property name="text">
        <string>제목 출력</string>
       </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
      </widget>
     </item>
     <item>
      <widget class="QCheckBox" name="printoriginCheckBox">
       <property name="text">
        <string>(댓글) 원본 글 주소 출력</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -172,6 +181,9 @@
      <widget class="QCheckBox" name="printboardsearchendCheckBox">
       <property name="text">
        <string>게시판 검색 완료 시 출력</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>
@@ -261,6 +273,9 @@
      <widget class="QCheckBox" name="printplasterCheckBox">
       <property name="text">
        <string>각 완료 알림 출력</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
       </property>
      </widget>
     </item>

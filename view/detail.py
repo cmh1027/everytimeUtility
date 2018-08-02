@@ -1,137 +1,142 @@
-# -*- coding: utf-8 -*-
+from PyQt5 import QtCore, QtWidgets
+import view.ui.detail as detail
+from data import Data
+from PyQt5.QtCore import pyqtSlot
 
-# Form implementation generated from reading ui file 'detail.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.2
-#
-# WARNING! All changes made in this file will be lost!
+class OthersDetail(QtWidgets.QDialog):
+    def __init__(self, window):
+        super(window)
+        self.setupUi()
+        self.show()
+        button = self.findChild(QtWidgets.QPushButton, "cancelButton")
+        button.clicked.connect(self.cancelDialog)
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+    def setupUi(self):
+        ui = detail.Ui_Dialog()
+        ui.setupUi(self)
+        articleTableWidget = self.findChild(QtWidgets.QTableWidget, "articleTable")
+        articleTableWidget.setColumnWidth(0, 248)
+        articleTableWidget.setColumnWidth(1, 30)
+        articleTableWidget.setColumnWidth(2, 30)
+        articleTableWidget.setColumnWidth(3, 70)
+        articleTableWidget.setColumnWidth(4, 80)
+        articleTableWidget.setColumnWidth(5, 240)
+        commentTableWidget = self.findChild(QtWidgets.QTableWidget, "commentTable")
+        commentTableWidget.setColumnWidth(0, 181)
+        commentTableWidget.setColumnWidth(1, 145)
+        commentTableWidget.setColumnWidth(2, 70)
+        commentTableWidget.setColumnWidth(3, 80)
+        commentTableWidget.setColumnWidth(4, 240)
+        if "article" in Data.others:
+            for row, article in enumerate(Data.others["article"]):
+                articleTableWidget.insertRow(row)
+                if article["article"]["title"] == "":
+                    item = QtWidgets.QTableWidgetItem(article["article"]["text"].replace("<br />", " ").replace("&lt;", "<"))
+                else:
+                    item = QtWidgets.QTableWidgetItem(article["article"]["title"].replace("&lt;", "<"))
+                articleTableWidget.setItem(row, 0, item)
+                item = QtWidgets.QTableWidgetItem(article["article"]["comment"])
+                articleTableWidget.setItem(row, 1, item)
+                item = QtWidgets.QTableWidgetItem(article["article"]["posvote"])
+                articleTableWidget.setItem(row, 2, item)
+                item = QtWidgets.QTableWidgetItem(article["article"]["created_at"])
+                articleTableWidget.setItem(row, 3, item)
+                for board, boardId in Data.boards.items():
+                    if boardId == article["board"]:
+                        item = QtWidgets.QTableWidgetItem(board)
+                        break
+                articleTableWidget.setItem(row, 4, item)
+                item = QtWidgets.QTableWidgetItem("https://www.everytime.kr/{}/v/{}".format(boardId, article["article"]["id"]))
+                articleTableWidget.setItem(row, 5, item)
+        if "comment" in Data.others:
+            for row, comment in enumerate(Data.others["comment"]):
+                commentTableWidget.insertRow(row)
+                item = QtWidgets.QTableWidgetItem(comment["comment"]["text"].replace("&lt;", "<"))
+                commentTableWidget.setItem(row, 0, item)
+                if comment["article"]["title"] == "":
+                    item = QtWidgets.QTableWidgetItem(comment["article"]["text"].replace("<br />", " ").replace("&lt;", "<"))
+                else:
+                    item = QtWidgets.QTableWidgetItem(comment["article"]["title"].replace("&lt;", "<"))
+                commentTableWidget.setItem(row, 1, item)
+                item = QtWidgets.QTableWidgetItem(comment["comment"]["created_at"])
+                commentTableWidget.setItem(row, 2, item)
+                for board, boardId in Data.boards.items():
+                    if boardId == comment["board"]:
+                        item = QtWidgets.QTableWidgetItem(board)
+                        break
+                commentTableWidget.setItem(row, 3, item)
+                item = QtWidgets.QTableWidgetItem("https://www.everytime.kr/{}/v/{}".format(boardId, comment["article"]["id"]))
+                commentTableWidget.setItem(row, 4, item)
+    
+    @pyqtSlot()
+    def cancelDialog(self):
+        self.deleteLater()
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(758, 447)
-        Dialog.setMinimumSize(QtCore.QSize(758, 447))
-        Dialog.setMaximumSize(QtCore.QSize(758, 447))
-        Dialog.setStyleSheet("background-color: rgb(255, 255, 157);")
-        Dialog.setModal(True)
-        self.articleTable = QtWidgets.QTableWidget(Dialog)
-        self.articleTable.setGeometry(QtCore.QRect(0, 0, 758, 201))
-        font = QtGui.QFont()
-        font.setPointSize(8)
-        self.articleTable.setFont(font)
-        self.articleTable.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        self.articleTable.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        self.articleTable.setObjectName("articleTable")
-        self.articleTable.setColumnCount(6)
-        self.articleTable.setRowCount(0)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.articleTable.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.articleTable.setHorizontalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.articleTable.setHorizontalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.articleTable.setHorizontalHeaderItem(3, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.articleTable.setHorizontalHeaderItem(4, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.articleTable.setHorizontalHeaderItem(5, item)
-        self.articleTable.horizontalHeader().setDefaultSectionSize(115)
-        self.articleTable.horizontalHeader().setMinimumSectionSize(39)
-        self.articleTable.verticalHeader().setMinimumSectionSize(23)
-        self.commentTable = QtWidgets.QTableWidget(Dialog)
-        self.commentTable.setGeometry(QtCore.QRect(0, 200, 758, 221))
-        font = QtGui.QFont()
-        font.setPointSize(8)
-        self.commentTable.setFont(font)
-        self.commentTable.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        self.commentTable.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
-        self.commentTable.setObjectName("commentTable")
-        self.commentTable.setColumnCount(5)
-        self.commentTable.setRowCount(0)
-        item = QtWidgets.QTableWidgetItem()
-        self.commentTable.setHorizontalHeaderItem(0, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.commentTable.setHorizontalHeaderItem(1, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.commentTable.setHorizontalHeaderItem(2, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.commentTable.setHorizontalHeaderItem(3, item)
-        item = QtWidgets.QTableWidgetItem()
-        self.commentTable.setHorizontalHeaderItem(4, item)
-        self.commentTable.horizontalHeader().setDefaultSectionSize(115)
-        self.commentTable.horizontalHeader().setMinimumSectionSize(39)
-        self.commentTable.verticalHeader().setMinimumSectionSize(23)
-        self.verticalLayoutWidget = QtWidgets.QWidget(Dialog)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 420, 761, 25))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.cancelButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.cancelButton.sizePolicy().hasHeightForWidth())
-        self.cancelButton.setSizePolicy(sizePolicy)
-        self.cancelButton.setMinimumSize(QtCore.QSize(55, 0))
-        self.cancelButton.setMaximumSize(QtCore.QSize(55, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("맑은 고딕")
-        font.setPointSize(8)
-        font.setBold(False)
-        font.setWeight(50)
-        self.cancelButton.setFont(font)
-        self.cancelButton.setStyleSheet("background-color: rgb(200, 200, 200)")
-        self.cancelButton.setFlat(False)
-        self.cancelButton.setObjectName("cancelButton")
-        self.verticalLayout.addWidget(self.cancelButton, 0, QtCore.Qt.AlignHCenter)
+class MineDetail(QtWidgets.QDialog):
+    def __init__(self, window):
+        super(window)
+        self.setupUi()
+        self.show()
+        button = self.findChild(QtWidgets.QPushButton, "cancelButton")
+        button.clicked.connect(self.cancelDialog)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+    def setupUi(self):
+        ui = detail.Ui_Dialog()
+        ui.setupUi(self)
+        articleTableWidget = self.findChild(QtWidgets.QTableWidget, "articleTable")
+        articleTableWidget.setColumnWidth(0, 260)
+        articleTableWidget.setColumnWidth(1, 30)
+        articleTableWidget.setColumnWidth(2, 30)
+        articleTableWidget.setColumnWidth(3, 70)
+        articleTableWidget.setColumnWidth(4, 80)
+        articleTableWidget.setColumnWidth(5, 253)
+        commentTableWidget = self.findChild(QtWidgets.QTableWidget, "commentTable")
+        commentTableWidget.setColumnWidth(0, 193)
+        commentTableWidget.setColumnWidth(1, 145)
+        commentTableWidget.setColumnWidth(2, 70)
+        commentTableWidget.setColumnWidth(3, 80)
+        commentTableWidget.setColumnWidth(4, 253)
+        if "article" in Data.mine:
+            for row, article in enumerate(Data.mine["article"]):
+                articleTableWidget.insertRow(row)
+                if article["title"] == "":
+                    item = QtWidgets.QTableWidgetItem(article["text"].replace("<br />", " "))
+                else:
+                    item = QtWidgets.QTableWidgetItem(article["title"])
+                articleTableWidget.setItem(row, 0, item)
+                item = QtWidgets.QTableWidgetItem(article["comment"])
+                articleTableWidget.setItem(row, 1, item)
+                item = QtWidgets.QTableWidgetItem(article["posvote"])
+                articleTableWidget.setItem(row, 2, item)
+                item = QtWidgets.QTableWidgetItem(article["created_at"])
+                articleTableWidget.setItem(row, 3, item)
+                for board, boardId in Data.boards.items():
+                    if boardId == article["board_id"]:
+                        item = QtWidgets.QTableWidgetItem(board)
+                        break
+                articleTableWidget.setItem(row, 4, item)
+                item = QtWidgets.QTableWidgetItem("https://www.everytime.kr/{}/v/{}".format(boardId, article["id"]))
+                articleTableWidget.setItem(row, 5, item)
+        if "comment" in Data.mine:
+            for row, comment in enumerate(Data.mine["comment"]):
+                commentTableWidget.insertRow(row)
+                item = QtWidgets.QTableWidgetItem(comment["comment"]["text"])
+                commentTableWidget.setItem(row, 0, item)
+                if comment["article"]["title"] == "":
+                    item = QtWidgets.QTableWidgetItem(comment["article"]["text"].replace("<br />", " "))
+                else:
+                    item = QtWidgets.QTableWidgetItem(comment["article"]["title"])
+                commentTableWidget.setItem(row, 1, item)
+                item = QtWidgets.QTableWidgetItem(comment["comment"]["created_at"])
+                commentTableWidget.setItem(row, 2, item)
+                for board, boardId in Data.boards.items():
+                    if boardId == comment["article"]["board_id"]:
+                        item = QtWidgets.QTableWidgetItem(board)
+                        break
+                commentTableWidget.setItem(row, 3, item)
+                item = QtWidgets.QTableWidgetItem("https://www.everytime.kr/{}/v/{}".format(boardId, comment["article"]["id"]))
+                commentTableWidget.setItem(row, 4, item)
 
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "detail"))
-        item = self.articleTable.horizontalHeaderItem(0)
-        item.setText(_translate("Dialog", "제목"))
-        item = self.articleTable.horizontalHeaderItem(1)
-        item.setText(_translate("Dialog", "댓글"))
-        item = self.articleTable.horizontalHeaderItem(2)
-        item.setText(_translate("Dialog", "공감"))
-        item = self.articleTable.horizontalHeaderItem(3)
-        item.setText(_translate("Dialog", "날짜"))
-        item = self.articleTable.horizontalHeaderItem(4)
-        item.setText(_translate("Dialog", "게시판"))
-        item = self.articleTable.horizontalHeaderItem(5)
-        item.setText(_translate("Dialog", "링크"))
-        item = self.commentTable.horizontalHeaderItem(0)
-        item.setText(_translate("Dialog", "내용"))
-        item = self.commentTable.horizontalHeaderItem(1)
-        item.setText(_translate("Dialog", "원글 제목"))
-        item = self.commentTable.horizontalHeaderItem(2)
-        item.setText(_translate("Dialog", "날짜"))
-        item = self.commentTable.horizontalHeaderItem(3)
-        item.setText(_translate("Dialog", "게시판"))
-        item = self.commentTable.horizontalHeaderItem(4)
-        item.setText(_translate("Dialog", "링크"))
-        self.cancelButton.setText(_translate("Dialog", "나가기"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
-    sys.exit(app.exec_())
-
+    @pyqtSlot()
+    def cancelDialog(self):
+        self.deleteLater()

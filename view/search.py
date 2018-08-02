@@ -1,292 +1,156 @@
-# -*- coding: utf-8 -*-
+import view.ui.search as search
+from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from data import Data
+from config import Config
+from view.selectBoardDialog import SelectBoardDialog
+import view.detail as Detail
 
-# Form implementation generated from reading ui file 'search.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.2
-#
-# WARNING! All changes made in this file will be lost!
+class Search(QtWidgets.QWidget):
+    searchOthersEndSignal = pyqtSignal()
+    plasterEndSignal = pyqtSignal()
+    def __init__(self, window):
+        super().__init__()
+        self.MainWindow = window
+        ui = search.Ui_Form()
+        ui.setupUi(self)
+        checkbox = self.findChild(QtWidgets.QCheckBox, "allCheckBox")
+        nickname = self.findChild(QtWidgets.QLineEdit, "nicknameLineEdit")
+        checkbox.stateChanged.connect(lambda: nickname.setEnabled(not checkbox.isChecked()))
+        checkbox2 = self.findChild(QtWidgets.QCheckBox, "articlekeywordCheckBox")
+        articleKeyword = self.findChild(QtWidgets.QLineEdit, "articlekeywordLineEdit")
+        checkbox2.stateChanged.connect(lambda: articleKeyword.setEnabled(checkbox2.isChecked()))
+        checkbox3 = self.findChild(QtWidgets.QCheckBox, "commentkeywordCheckBox")
+        commentKeyword = self.findChild(QtWidgets.QLineEdit, "commentkeywordLineEdit")
+        checkbox3.stateChanged.connect(lambda: commentKeyword.setEnabled(checkbox3.isChecked()))
+        self.findChild(QtWidgets.QPushButton, "selectboardButton").clicked.connect(self.selectBoard)
+        self.findChild(QtWidgets.QPushButton, "searchButton").clicked.connect(self.startSearch)
+        self.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.abortSearch)
+        self.findChild(QtWidgets.QPushButton, "detailButton").clicked.connect(self.searchedDetail)
+        self.findChild(QtWidgets.QPushButton, "savecommentButton").clicked.connect(self.saveComment)
+        self.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").setValidator(QtGui.QIntValidator(0, 100000))
+        self.findChild(QtWidgets.QLineEdit, "searchpageEndLineEdit").setValidator(QtGui.QIntValidator(0, 100000))
+        self.searchOthersEndSignal.connect(self.searchOthersEnd)
+        self.plasterEndSignal.connect(self.plasterEnd)
+    
+    def update(self):
+        if not Config.Search.searchingOthers:
+            if "article" in Data.others and "comment" in Data.others:
+                self.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개 / 댓글 {}개".format(len(Data.others["article"]), len(Data.others["comment"])))
+            elif "article" in Data.others and "comment" not in Data.others:
+                self.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개".format(len(Data.others["article"])))
+            elif "article" not in Data.others and "comment" in Data.others:
+                self.findChild(QtWidgets.QLabel, "infoLabel").setText("댓글 {}개".format(len(Data.others["comment"])))
+        btn = self.findChild(QtWidgets.QPushButton, "searchButton")
+        if Config.Search.searchingOthers:
+            btn.setEnabled(False)
+            btn.setText("검색중")
+        if Config.Plaster.plastering:
+            btn.setEnabled(False)
+            btn.setText("도배중")
+        
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+    @pyqtSlot()
+    def selectBoard(self):
+        SelectBoardDialog(self.MainWindow)
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(231, 223)
-        self.verticalLayoutWidget = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 228, 221))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setContentsMargins(6, 0, 6, 0)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.selectboardButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.selectboardButton.sizePolicy().hasHeightForWidth())
-        self.selectboardButton.setSizePolicy(sizePolicy)
-        self.selectboardButton.setMaximumSize(QtCore.QSize(80, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("맑은 고딕")
-        font.setBold(True)
-        font.setWeight(75)
-        self.selectboardButton.setFont(font)
-        self.selectboardButton.setStyleSheet("background-color: rgb(200, 200, 200)")
-        self.selectboardButton.setFlat(False)
-        self.selectboardButton.setObjectName("selectboardButton")
-        self.verticalLayout.addWidget(self.selectboardButton)
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_4.setContentsMargins(-1, -1, 0, -1)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.label_3 = QtWidgets.QLabel(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
-        self.label_3.setSizePolicy(sizePolicy)
-        self.label_3.setMinimumSize(QtCore.QSize(32, 0))
-        self.label_3.setObjectName("label_3")
-        self.horizontalLayout_4.addWidget(self.label_3)
-        self.searchpageLineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget)
-        self.searchpageLineEdit.setMinimumSize(QtCore.QSize(35, 0))
-        self.searchpageLineEdit.setMaximumSize(QtCore.QSize(35, 16777215))
-        self.searchpageLineEdit.setText("")
-        self.searchpageLineEdit.setMaxLength(14)
-        self.searchpageLineEdit.setObjectName("searchpageLineEdit")
-        self.horizontalLayout_4.addWidget(self.searchpageLineEdit)
-        self.label_4 = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_4.setObjectName("label_4")
-        self.horizontalLayout_4.addWidget(self.label_4)
-        self.searchpageEndLineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget)
-        self.searchpageEndLineEdit.setMinimumSize(QtCore.QSize(35, 0))
-        self.searchpageEndLineEdit.setMaximumSize(QtCore.QSize(35, 16777215))
-        self.searchpageEndLineEdit.setText("")
-        self.searchpageEndLineEdit.setMaxLength(14)
-        self.searchpageEndLineEdit.setObjectName("searchpageEndLineEdit")
-        self.horizontalLayout_4.addWidget(self.searchpageEndLineEdit)
-        self.label_5 = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_5.setObjectName("label_5")
-        self.horizontalLayout_4.addWidget(self.label_5)
-        self.verticalLayout.addLayout(self.horizontalLayout_4)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setContentsMargins(-1, -1, 0, -1)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label.setObjectName("label")
-        self.horizontalLayout.addWidget(self.label)
-        self.nicknameLineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget)
-        self.nicknameLineEdit.setText("")
-        self.nicknameLineEdit.setMaxLength(14)
-        self.nicknameLineEdit.setObjectName("nicknameLineEdit")
-        self.horizontalLayout.addWidget(self.nicknameLineEdit)
-        self.allCheckBox = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.allCheckBox.sizePolicy().hasHeightForWidth())
-        self.allCheckBox.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setFamily("굴림")
-        self.allCheckBox.setFont(font)
-        self.allCheckBox.setObjectName("allCheckBox")
-        self.horizontalLayout.addWidget(self.allCheckBox)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-        self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_6.setContentsMargins(-1, -1, 0, -1)
-        self.horizontalLayout_6.setObjectName("horizontalLayout_6")
-        self.label_2 = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_2.setMinimumSize(QtCore.QSize(64, 0))
-        self.label_2.setObjectName("label_2")
-        self.horizontalLayout_6.addWidget(self.label_2)
-        self.articlekeywordLineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget)
-        self.articlekeywordLineEdit.setText("")
-        self.articlekeywordLineEdit.setMaxLength(14)
-        self.articlekeywordLineEdit.setObjectName("articlekeywordLineEdit")
-        self.horizontalLayout_6.addWidget(self.articlekeywordLineEdit)
-        self.articlekeywordCheckBox = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.articlekeywordCheckBox.sizePolicy().hasHeightForWidth())
-        self.articlekeywordCheckBox.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setFamily("굴림")
-        self.articlekeywordCheckBox.setFont(font)
-        self.articlekeywordCheckBox.setObjectName("articlekeywordCheckBox")
-        self.horizontalLayout_6.addWidget(self.articlekeywordCheckBox)
-        self.verticalLayout.addLayout(self.horizontalLayout_6)
-        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_7.setContentsMargins(-1, -1, 0, -1)
-        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.label_6 = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_6.setObjectName("label_6")
-        self.horizontalLayout_7.addWidget(self.label_6)
-        self.commentkeywordLineEdit = QtWidgets.QLineEdit(self.verticalLayoutWidget)
-        self.commentkeywordLineEdit.setText("")
-        self.commentkeywordLineEdit.setMaxLength(14)
-        self.commentkeywordLineEdit.setObjectName("commentkeywordLineEdit")
-        self.horizontalLayout_7.addWidget(self.commentkeywordLineEdit)
-        self.commentkeywordCheckBox = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.commentkeywordCheckBox.sizePolicy().hasHeightForWidth())
-        self.commentkeywordCheckBox.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setFamily("굴림")
-        self.commentkeywordCheckBox.setFont(font)
-        self.commentkeywordCheckBox.setObjectName("commentkeywordCheckBox")
-        self.horizontalLayout_7.addWidget(self.commentkeywordCheckBox)
-        self.verticalLayout.addLayout(self.horizontalLayout_7)
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setContentsMargins(-1, -1, 13, -1)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.articleCheckBox = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.articleCheckBox.sizePolicy().hasHeightForWidth())
-        self.articleCheckBox.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setFamily("굴림")
-        self.articleCheckBox.setFont(font)
-        self.articleCheckBox.setObjectName("articleCheckBox")
-        self.horizontalLayout_2.addWidget(self.articleCheckBox, 0, QtCore.Qt.AlignLeft)
-        self.commentCheckBox = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.commentCheckBox.sizePolicy().hasHeightForWidth())
-        self.commentCheckBox.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setFamily("굴림")
-        self.commentCheckBox.setFont(font)
-        self.commentCheckBox.setObjectName("commentCheckBox")
-        self.horizontalLayout_2.addWidget(self.commentCheckBox, 0, QtCore.Qt.AlignLeft)
-        self.searchButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.searchButton.sizePolicy().hasHeightForWidth())
-        self.searchButton.setSizePolicy(sizePolicy)
-        self.searchButton.setMaximumSize(QtCore.QSize(50, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("맑은 고딕")
-        font.setBold(True)
-        font.setWeight(75)
-        self.searchButton.setFont(font)
-        self.searchButton.setStyleSheet("background-color: rgb(200, 200, 200)")
-        self.searchButton.setFlat(False)
-        self.searchButton.setObjectName("searchButton")
-        self.horizontalLayout_2.addWidget(self.searchButton)
-        self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_5.setContentsMargins(0, -1, 13, -1)
-        self.horizontalLayout_5.setSpacing(0)
-        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.cancelButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.cancelButton.sizePolicy().hasHeightForWidth())
-        self.cancelButton.setSizePolicy(sizePolicy)
-        self.cancelButton.setMaximumSize(QtCore.QSize(50, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("맑은 고딕")
-        font.setBold(True)
-        font.setWeight(75)
-        self.cancelButton.setFont(font)
-        self.cancelButton.setStyleSheet("background-color: rgb(200, 200, 200)")
-        self.cancelButton.setFlat(False)
-        self.cancelButton.setObjectName("cancelButton")
-        self.horizontalLayout_5.addWidget(self.cancelButton, 0, QtCore.Qt.AlignRight)
-        self.verticalLayout.addLayout(self.horizontalLayout_5)
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_3.setContentsMargins(-1, -1, 13, -1)
-        self.horizontalLayout_3.setSpacing(5)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.detailButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.detailButton.sizePolicy().hasHeightForWidth())
-        self.detailButton.setSizePolicy(sizePolicy)
-        self.detailButton.setMaximumSize(QtCore.QSize(50, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("맑은 고딕")
-        font.setBold(True)
-        font.setWeight(75)
-        self.detailButton.setFont(font)
-        self.detailButton.setStyleSheet("background-color: rgb(200, 200, 200)")
-        self.detailButton.setFlat(False)
-        self.detailButton.setObjectName("detailButton")
-        self.horizontalLayout_3.addWidget(self.detailButton)
-        self.savecommentButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.savecommentButton.sizePolicy().hasHeightForWidth())
-        self.savecommentButton.setSizePolicy(sizePolicy)
-        self.savecommentButton.setMinimumSize(QtCore.QSize(70, 0))
-        self.savecommentButton.setMaximumSize(QtCore.QSize(70, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("맑은 고딕")
-        font.setBold(True)
-        font.setWeight(75)
-        self.savecommentButton.setFont(font)
-        self.savecommentButton.setStyleSheet("background-color: rgb(200, 200, 200)")
-        self.savecommentButton.setFlat(False)
-        self.savecommentButton.setObjectName("savecommentButton")
-        self.horizontalLayout_3.addWidget(self.savecommentButton)
-        self.verticalLayout.addLayout(self.horizontalLayout_3)
-        self.infoLabel = QtWidgets.QLabel(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.infoLabel.sizePolicy().hasHeightForWidth())
-        self.infoLabel.setSizePolicy(sizePolicy)
-        self.infoLabel.setMinimumSize(QtCore.QSize(115, 0))
-        font = QtGui.QFont()
-        font.setFamily("맑은 고딕")
-        font.setPointSize(10)
-        font.setBold(True)
-        font.setWeight(75)
-        self.infoLabel.setFont(font)
-        self.infoLabel.setText("")
-        self.infoLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.infoLabel.setObjectName("infoLabel")
-        self.verticalLayout.addWidget(self.infoLabel)
+    @pyqtSlot()
+    def startSearch(self):
+        searchPage = int(self.findChild(QtWidgets.QLineEdit, "searchpageLineEdit").text())
+        searchEndPage = int(self.findChild(QtWidgets.QLineEdit, "searchpageEndLineEdit").text())
+        searchNickname = self.findChild(QtWidgets.QLineEdit, "nicknameLineEdit").text()
+        articleCheckFlag = self.findChild(QtWidgets.QCheckBox, "articleCheckBox").isChecked()
+        commentCheckFlag = self.findChild(QtWidgets.QCheckBox, "commentCheckBox").isChecked()
+        searchAllFlag = self.findChild(QtWidgets.QCheckBox, "allCheckBox").isChecked()
+        articleKeyword = self.findChild(QtWidgets.QLineEdit, "articlekeywordLineEdit").text()
+        commentKeyword = self.findChild(QtWidgets.QLineEdit, "commentkeywordLineEdit").text()
+        articleKeywordFlag = self.findChild(QtWidgets.QCheckBox, "articlekeywordCheckBox").isChecked()
+        commentKeywordFlag = self.findChild(QtWidgets.QCheckBox, "commentkeywordCheckBox").isChecked()
+        if not articleCheckFlag and not commentCheckFlag:
+            self.MainWindow.messageDialog("error", "글 혹은 댓글 검색 중 적어도 하나를 체크해주세요")
+            return
+        if len(Config.Search.selectedBoards) == 0:
+            self.MainWindow.messageDialog("error", "적어도 하나의 게시판을 체크해주세요")
+            return
+        if searchPage == 0:
+            self.MainWindow.messageDialog("error", "시작 페이지는 1페이지 이상이어야 합니다")
+            return
+        if searchPage > searchEndPage:
+            self.MainWindow.messageDialog("error", "페이지 설정이 잘못되었습니다")
+            return
+        if searchNickname == "" and not searchAllFlag:
+            self.MainWindow.messageDialog("error", "닉네임을 입력해주세요")
+            return
+        if articleKeyword == "" and articleKeywordFlag:
+            self.MainWindow.messageDialog("error", "글 키워드를 입력해주세요")
+            return
+        if commentKeyword == "" and commentKeywordFlag:
+            self.MainWindow.messageDialog("error", "댓글 키워드를 입력해주세요")
+            return            
+        Data.others = {}
+        btn = self.findChild(QtWidgets.QPushButton, "searchButton")
+        btn.setEnabled(False)
+        btn.setText("검색중")
+        Config.Search.searchingOthers = True
+        self.MainWindow.addProgressSignal.emit("[System] 검색을 시작합니다")
+        option = {}
+        option["boards"] = Config.Search.selectedBoards
+        option["page"] = searchPage
+        option["pageEnd"] = searchEndPage
+        option["nickname"] = searchNickname
+        option["articleFlag"] = articleCheckFlag
+        option["commentFlag"] = commentCheckFlag
+        option["all"] = searchAllFlag
+        option["articleKeyword"] = articleKeyword
+        option["commentKeyword"] = commentKeyword
+        option["articleKeywordFlag"] = articleKeywordFlag
+        option["commentKeywordFlag"] = commentKeywordFlag
+        Config.Search.searchAllFlag = searchAllFlag
+        Config.Search.searchNickname = searchNickname
+        self.MainWindow.RequestHandle.searchOthers(option)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+    @pyqtSlot()
+    def abortSearch(self):
+        if Config.Search.searchingOthers:
+            self.MainWindow.RequestHandle.abortSearch()
+            Config.Search.searchingOthers = False
+            btn = self.findChild(QtWidgets.QPushButton, "searchButton")
+            btn.setEnabled(True)
+            btn.setText("검색")
+            self.MainWindow.addProgressSignal.emit("[System] 검색이 중지되었습니다")
 
-    def retranslateUi(self, Form):
-        _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.selectboardButton.setText(_translate("Form", "게시판 선택"))
-        self.label_3.setText(_translate("Form", "탐색 "))
-        self.label_4.setText(_translate("Form", "페이지 ~"))
-        self.label_5.setText(_translate("Form", "페이지"))
-        self.label.setText(_translate("Form", "닉네임"))
-        self.allCheckBox.setText(_translate("Form", "모두"))
-        self.label_2.setText(_translate("Form", "글 키워드"))
-        self.articlekeywordCheckBox.setText(_translate("Form", "사용"))
-        self.label_6.setText(_translate("Form", "댓글 키워드"))
-        self.commentkeywordCheckBox.setText(_translate("Form", "사용"))
-        self.articleCheckBox.setText(_translate("Form", "게시글"))
-        self.commentCheckBox.setText(_translate("Form", "댓글"))
-        self.searchButton.setText(_translate("Form", "검색"))
-        self.cancelButton.setText(_translate("Form", "중지"))
-        self.detailButton.setText(_translate("Form", "자세히"))
-        self.savecommentButton.setText(_translate("Form", "댓글 저장"))
+    @pyqtSlot()
+    def searchedDetail(self):
+        Detail.OthersDetail(self.MainWindow)
 
+    @pyqtSlot()
+    def saveComment(self):
+        if "comment" in Data.others:
+            comments = list(map(lambda comment:comment["comment"]["text"], Data.others["comment"]))
+            Config.Plaster.plasterWord = list(reversed(comments))
+            self.MainWindow.messageDialog("ok", "저장되었습니다")
+        else:
+            self.MainWindow.messageDialog("error", "댓글을 먼저 검색해주세요")
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
-    sys.exit(app.exec_())
-
+    @pyqtSlot()
+    def searchOthersEnd(self):
+        self.MainWindow.addProgressSignal.emit("[System] 검색 완료")
+        Config.Search.searchingOthers = False
+        if self.MainWindow.currentMenu == "search":
+            btn = self.findChild(QtWidgets.QPushButton, "searchButton")
+            btn.setEnabled(True)
+            btn.setText("검색")
+            if "article" in Data.others and "comment" in Data.others:
+                self.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개 / 댓글 {}개".format(len(Data.others["article"]), len(Data.others["comment"])))
+            elif "article" in Data.others and "comment" not in Data.others:
+                self.findChild(QtWidgets.QLabel, "infoLabel").setText("글 {}개".format(len(Data.others["article"])))
+            elif "article" not in Data.others and "comment" in Data.others:
+                self.findChild(QtWidgets.QLabel, "infoLabel").setText("댓글 {}개".format(len(Data.others["comment"])))
+        elif self.MainWindow.currentMenu == "plaster":
+            self.MainWindow.Plaster.searchOthersEndSignal.emit()
+    
+    @pyqtSlot()
+    def plasterEnd(self):
+        btn = self.findChild(QtWidgets.QPushButton, "searchButton")
+        btn.setEnabled(True)
+        btn.setText("검색")

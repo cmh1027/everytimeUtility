@@ -1,77 +1,17 @@
-# -*- coding: utf-8 -*-
+from PyQt5 import QtWidgets
+import view.ui.messageDialog as messageDialog
+class MessageDialog(QtWidgets.QDialog):
+    def __init__(self, parent, title, content):
+        super().__init__(parent)
+        ui = messageDialog.Ui_Dialog()
+        ui.setupUi(self)
+        self.setWindowTitle(title)
+        self.findChild(QtWidgets.QLabel, "messageLabel").setText(content)
+        self.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.close)
+        layoutWidget = self.findChild(QtWidgets.QWidget, "verticalLayoutWidget")
+        self.resize(len(content)*13, layoutWidget.height()+5)
+        layoutWidget.setFixedWidth(self.width())
+        self.show()
 
-# Form implementation generated from reading ui file 'messageDialog.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.2
-#
-# WARNING! All changes made in this file will be lost!
-
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(151, 68)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
-        Dialog.setSizePolicy(sizePolicy)
-        Dialog.setMinimumSize(QtCore.QSize(151, 0))
-        Dialog.setStyleSheet("background-color:rgb(250, 255, 151)")
-        Dialog.setModal(True)
-        self.verticalLayoutWidget = QtWidgets.QWidget(Dialog)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 151, 61))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.messageLabel = QtWidgets.QLabel(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.messageLabel.sizePolicy().hasHeightForWidth())
-        self.messageLabel.setSizePolicy(sizePolicy)
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.messageLabel.setFont(font)
-        self.messageLabel.setText("")
-        self.messageLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.messageLabel.setObjectName("messageLabel")
-        self.verticalLayout.addWidget(self.messageLabel, 0, QtCore.Qt.AlignHCenter)
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setContentsMargins(0, 0, 0, -1)
-        self.horizontalLayout.setSpacing(0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.cancelButton = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.cancelButton.sizePolicy().hasHeightForWidth())
-        self.cancelButton.setSizePolicy(sizePolicy)
-        self.cancelButton.setStyleSheet("background-color:rgb(255, 255, 255)")
-        self.cancelButton.setObjectName("cancelButton")
-        self.horizontalLayout.addWidget(self.cancelButton, 0, QtCore.Qt.AlignHCenter)
-        self.verticalLayout.addLayout(self.horizontalLayout)
-
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
-    def retranslateUi(self, Dialog):
-        _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "dialog"))
-        self.cancelButton.setText(_translate("Dialog", "확인"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
-    ui.setupUi(Dialog)
-    Dialog.show()
-    sys.exit(app.exec_())
-
+    def close(self):
+        self.deleteLater()

@@ -340,7 +340,7 @@ background-color:rgb(156, 226, 255)</string>
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="Form" native="true">
+   <widget class="QStackedWidget" name="Form">
     <property name="geometry">
      <rect>
       <x>140</x>

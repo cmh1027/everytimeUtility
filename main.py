@@ -1,10 +1,8 @@
 from PyQt5 import QtWidgets
-import model.widget as widget
-
+from view.mainWindow import Window
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = widget.Window()
-    MainWindow.Render.login()
+    MainWindow = Window()
     MainWindow.show()
     sys.exit(app.exec_())
