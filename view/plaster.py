@@ -137,6 +137,5 @@ class Plaster(QtWidgets.QWidget):
             btn = self.findChild(QtWidgets.QPushButton, "startplatsterButton")
             btn.setEnabled(True)
             btn.setText("Go!")
-            self.enableButton(btn, "Go!")
 
     
