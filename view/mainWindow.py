@@ -81,7 +81,8 @@ class Window(QtWidgets.QMainWindow):
         self.Configuration = Configuration(self)
         stackedWidget.addWidget(self.Configuration)
         stackedWidget.addWidget(Loading())
-        self.deleteMenu()
+        stackedWidget.addWidget(QtWidgets.QWidget())
+        stackedWidget.setCurrentIndex(5)
 
     def messageDialog(self, title, content):
         MessageDialog(self, title, content)

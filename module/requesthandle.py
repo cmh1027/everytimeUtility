@@ -418,6 +418,7 @@ class RequestHandle:
         if option["commentFlag"]:
             Data.others["comment"] = sorted(Data.others["comment"], key=Util.comparator(Util.commentDateCompare), reverse=True)
         self.MainWindow.Search.searchOthersEndSignal.emit()
+        self.MainWindow.Plaster.searchOthersEndSignal.emit()
 
     def searchOthers(self, option):
         thread = CustomThread(self.searchOthersTarget, self.threadFinished, "searchOthers", (Config.All.threadCount, option))
@@ -606,6 +607,7 @@ class RequestHandle:
             self.articleCyclePlaster(option)
         else:
             self.stringCyclePlaster(option)
+        self.MainWindow.Search.plasterEndSignal.emit()
         self.MainWindow.Plaster.plasterEndSignal.emit()
 
     def plaster(self, option):

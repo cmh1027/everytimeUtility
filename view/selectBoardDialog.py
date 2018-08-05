@@ -42,7 +42,7 @@ class SelectBoardDialog(QtWidgets.QDialog):
         elif self.MainWindow.currentMenu == "plaster":
             Config.Plaster.plasterBoards.clear()
             for checkbox in checkboxes:
-                self.MainWindow.plasterBoards[checkbox.text()] = Data.boards[checkbox.text()]
+                Config.Plaster.plasterBoards[checkbox.text()] = Data.boards[checkbox.text()]
 
     def close(self):
         self.deleteLater()
