@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\Remote Debugger\\x64', 'C:\\Users\\Coder\\Desktop\\everytimeUtility'],
+             pathex=['C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\Common7\\IDE\\Remote Debugger\\x64', 'C:\\Users\\√÷πŒ«ı\\Desktop\\everytime'],
              binaries=[],
              datas=[],
              hiddenimports=['PyQt5.sip'],
