@@ -74,7 +74,7 @@ class OthersDetail(QtWidgets.QDialog):
 
 class MineDetail(QtWidgets.QDialog):
     def __init__(self, window):
-        super(window)
+        super().__init__(window)
         self.setupUi()
         self.show()
         button = self.findChild(QtWidgets.QPushButton, "cancelButton")
