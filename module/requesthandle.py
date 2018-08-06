@@ -378,6 +378,7 @@ class RequestHandle:
                     for comment in comments:
                         comment["board"] = boardId
                     others["comment"].extend(comments)
+                
             if not option["all"]:
                 articles = list(filter(lambda article:article["article"]["user_nickname"] == option["nickname"], articles))
             if option["articleKeywordFlag"]:
@@ -417,10 +418,15 @@ class RequestHandle:
             Data.others["article"] = sorted(Data.others["article"], key=Util.comparator(Util.articleDateCompare), reverse=True)
         if option["commentFlag"]:
             Data.others["comment"] = sorted(Data.others["comment"], key=Util.comparator(Util.commentDateCompare), reverse=True)
+        #with open("article.txt", "w", encoding='UTF-8') as file:
+        #    file.write("\n".join(list(map(lambda comment:comment["comment"]["text"], Data.others["comment"]))))
+        #    file.write("\n".join(list(map(lambda article:article["article"]["title"] + "\n" + article["article"]["text"], Data.others["article"]))))
         self.MainWindow.Search.searchOthersEndSignal.emit()
         self.MainWindow.Plaster.searchOthersEndSignal.emit()
+        
 
     def searchOthers(self, option):
+        
         thread = CustomThread(self.searchOthersTarget, self.threadFinished, "searchOthers", (Config.All.threadCount, option))
         self.threads["searchOthers"][thread] = thread
         thread.start()

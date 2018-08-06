@@ -5,7 +5,7 @@ from PyQt5.QtCore import pyqtSlot
 
 class OthersDetail(QtWidgets.QDialog):
     def __init__(self, window):
-        super(window)
+        super().__init__(window)
         self.setupUi()
         self.show()
         button = self.findChild(QtWidgets.QPushButton, "cancelButton")
