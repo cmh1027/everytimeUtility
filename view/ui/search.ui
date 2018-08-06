@@ -216,6 +216,9 @@
       </item>
       <item>
        <widget class="QLineEdit" name="articlekeywordLineEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -258,6 +261,9 @@
       </item>
       <item>
        <widget class="QLineEdit" name="commentkeywordLineEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -399,6 +405,9 @@
       </item>
       <item>
        <widget class="QLineEdit" name="filenameLineEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string/>
         </property>

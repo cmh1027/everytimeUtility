@@ -414,10 +414,10 @@ class RequestHandle:
             threadedSearch(boardId, Data.others)
             if Config.Search.printBoardSearchEndFlag:
                 self.MainWindow.addProgressSignal.emit("[System] {} 검색 완료".format(board))
-        if option["articleFlag"]:
-            Data.others["article"] = sorted(Data.others["article"], key=Util.comparator(Util.articleDateCompare), reverse=True)
-        if option["commentFlag"]:
-            Data.others["comment"] = sorted(Data.others["comment"], key=Util.comparator(Util.commentDateCompare), reverse=True)
+        # if option["articleFlag"]:
+        #    Data.others["article"] = sorted(Data.others["article"], key=Util.comparator(Util.articleDateCompare), reverse=True)
+        #if option["commentFlag"]:
+        #    Data.others["comment"] = sorted(Data.others["comment"], key=Util.comparator(Util.commentDateCompare), reverse=True)
         if option["saveFlag"]:
             with open(option["fileName"]+".txt", "w", encoding='UTF-8') as file:
                 if option["commentFlag"]:
