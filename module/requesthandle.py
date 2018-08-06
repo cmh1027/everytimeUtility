@@ -418,9 +418,16 @@ class RequestHandle:
             Data.others["article"] = sorted(Data.others["article"], key=Util.comparator(Util.articleDateCompare), reverse=True)
         if option["commentFlag"]:
             Data.others["comment"] = sorted(Data.others["comment"], key=Util.comparator(Util.commentDateCompare), reverse=True)
-        #with open("article.txt", "w", encoding='UTF-8') as file:
-        #    file.write("\n".join(list(map(lambda comment:comment["comment"]["text"], Data.others["comment"]))))
-        #    file.write("\n".join(list(map(lambda article:article["article"]["title"] + "\n" + article["article"]["text"], Data.others["article"]))))
+        if option["saveFlag"]:
+            with open(option["fileName"]+".txt", "w", encoding='UTF-8') as file:
+                if option["commentFlag"]:
+                    self.MainWindow.addProgressSignal.emit("[System] 글 저장 중".format(board))
+                    file.write("\n".join(list(map(lambda article:article["article"]["title"] + "\n" + article["article"]["text"], Data.others["article"]))))
+                    self.MainWindow.addProgressSignal.emit("[System] 글 저장 완료".format(board))
+                if option["articleFlag"]:
+                    self.MainWindow.addProgressSignal.emit("[System] 댓글 저장 중".format(board))
+                    file.write("\n".join(list(map(lambda comment:comment["comment"]["text"], Data.others["comment"]))))
+                    self.MainWindow.addProgressSignal.emit("[System] 댓글 저장 완료".format(board))
         self.MainWindow.Search.searchOthersEndSignal.emit()
         self.MainWindow.Plaster.searchOthersEndSignal.emit()
         

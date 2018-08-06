@@ -23,6 +23,10 @@ class Search(QtWidgets.QWidget):
         checkbox3 = self.findChild(QtWidgets.QCheckBox, "commentkeywordCheckBox")
         commentKeyword = self.findChild(QtWidgets.QLineEdit, "commentkeywordLineEdit")
         checkbox3.stateChanged.connect(lambda: commentKeyword.setEnabled(checkbox3.isChecked()))
+        fileName = self.findChild(QtWidgets.QLineEdit, "filenameLineEdit")
+        checkbox4 = self.findChild(QtWidgets.QCheckBox, "saveCheckBox")
+        checkbox4.stateChanged.connect(lambda: fileName.setEnabled(checkbox4.isChecked()))
+
         self.findChild(QtWidgets.QPushButton, "selectboardButton").clicked.connect(self.selectBoard)
         self.findChild(QtWidgets.QPushButton, "searchButton").clicked.connect(self.startSearch)
         self.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.abortSearch)
@@ -66,6 +70,8 @@ class Search(QtWidgets.QWidget):
         commentKeyword = self.findChild(QtWidgets.QLineEdit, "commentkeywordLineEdit").text()
         articleKeywordFlag = self.findChild(QtWidgets.QCheckBox, "articlekeywordCheckBox").isChecked()
         commentKeywordFlag = self.findChild(QtWidgets.QCheckBox, "commentkeywordCheckBox").isChecked()
+        saveFlag = self.findChild(QtWidgets.QCheckBox, "saveCheckBox").isChecked()
+        fileName = self.findChild(QtWidgets.QLineEdit, "filenameLineEdit").text()
         if not articleCheckFlag and not commentCheckFlag:
             self.MainWindow.messageDialog("error", "글 혹은 댓글 검색 중 적어도 하나를 체크해주세요")
             return
@@ -86,7 +92,15 @@ class Search(QtWidgets.QWidget):
             return
         if commentKeyword == "" and commentKeywordFlag:
             self.MainWindow.messageDialog("error", "댓글 키워드를 입력해주세요")
-            return            
+            return
+        if saveFlag:
+            if fileName == "":
+                self.MainWindow.messageDialog("error", "파일 이름을 입력해주세요")
+                return 
+            for char in fileName:
+                if not char.isalpha() and not char.isdigit():
+                    self.MainWindow.messageDialog("error", "파일 이름이 올바르지 않습니다. (확장자 제외)")
+                    return   
         Data.others = {}
         btn = self.findChild(QtWidgets.QPushButton, "searchButton")
         btn.setEnabled(False)
@@ -105,6 +119,8 @@ class Search(QtWidgets.QWidget):
         option["commentKeyword"] = commentKeyword
         option["articleKeywordFlag"] = articleKeywordFlag
         option["commentKeywordFlag"] = commentKeywordFlag
+        option["saveFlag"] = saveFlag
+        option["fileName"] = fileName
         Config.Search.searchAllFlag = searchAllFlag
         Config.Search.searchNickname = searchNickname
         self.MainWindow.RequestHandle.searchOthers(option)
