@@ -5,7 +5,7 @@ from PyQt5.QtCore import pyqtSlot
 
 class ExcludeWordDialog(QtWidgets.QDialog):
     def __init__(self, window):
-        super(window)
+        super().__init__(window)
         ui = excludeWordDialog.Ui_Dialog()
         ui.setupUi(self)
         self.show()
