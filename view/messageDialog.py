@@ -1,17 +1,12 @@
 from PyQt5 import QtWidgets
-import view.ui.messageDialog as messageDialog
-class MessageDialog(QtWidgets.QDialog):
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QMessageBox
+class MessageDialog(QtWidgets.QMessageBox):
     def __init__(self, parent, title, content):
         super().__init__(parent)
-        ui = messageDialog.Ui_Dialog()
-        ui.setupUi(self)
+        self.setWindowIcon(QIcon("icon.ico"))
         self.setWindowTitle(title)
-        self.findChild(QtWidgets.QLabel, "messageLabel").setText(content)
-        self.findChild(QtWidgets.QPushButton, "cancelButton").clicked.connect(self.close)
-        layoutWidget = self.findChild(QtWidgets.QWidget, "verticalLayoutWidget")
-        self.resize(len(content)*13, layoutWidget.height()+5)
-        layoutWidget.setFixedWidth(self.width())
+        self.setText(content)
+        self.setIcon(QMessageBox.Critical)
+        self.setStyleSheet("QPushButton{background-color: white;}")
         self.show()
-
-    def close(self):
-        self.deleteLater()

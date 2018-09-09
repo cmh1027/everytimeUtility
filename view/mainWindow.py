@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtGui import QIcon
 from bs4 import BeautifulSoup
 import view.loginScreen as loginScreen
 import view.mainScreen as mainScreen
@@ -17,6 +18,7 @@ class Window(QtWidgets.QMainWindow):
     addProgressSignal = pyqtSignal(str)
     def __init__(self):
         super().__init__()
+        self.setWindowIcon(QIcon("icon.ico"))
         self.RequestHandle = RequestHandle(self)
         self.addProgressSignal.connect(self.addProgress)
         self.initialize()
@@ -70,7 +72,6 @@ class Window(QtWidgets.QMainWindow):
         self.findChild(QtWidgets.QToolButton, "logoutButton").clicked.connect(self.logout)
         self.findChild(QtWidgets.QPushButton, "eraseButton").clicked.connect(self.eraseProgress)
 
-        #
         stackedWidget = self.findChild(QtWidgets.QStackedWidget, "Form")
         self.Delete = Delete(self)
         stackedWidget.addWidget(self.Delete)
@@ -107,6 +108,7 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def searchMenu(self):
+        # raise SyntaxError("Hello world!")
         self.currentMenu = "search"
         self.searchScreen()
 
@@ -116,6 +118,7 @@ class Window(QtWidgets.QMainWindow):
 
     @pyqtSlot()
     def plasterMenu(self):
+        # raise SyntaxError("Hello world!")
         self.currentMenu = "plaster"
         self.plasterScreen()
 
