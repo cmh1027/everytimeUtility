@@ -19,11 +19,33 @@ class Window(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowIcon(QIcon("icon.ico"))
-        self.RequestHandle = RequestHandle(self)
-        self.addProgressSignal.connect(self.addProgress)
+        self.RequestHandle = RequestHandle()
+        self.RequestHandle.progress.connect(self.addProgress)
+        self.RequestHandle.searchMineEnd.connect(self.searchMineEnd)
+        self.RequestHandle.deleteEnd.connect(self.deleteEnd)
+        self.RequestHandle.searchOthersEnd.connect(self.searchOthersEnd)
+        self.RequestHandle.plasterEnd.connect(self.plasterEnd)
         self.initialize()
         self.loginScreen()
-        
+    
+    @pyqtSlot()
+    def searchOthersEnd(self):
+        self.Search.searchOthersEndSignal.emit()
+        self.Plaster.searchOthersEndSignal.emit()
+
+    @pyqtSlot()
+    def plasterEnd(self):
+        self.Search.plasterEndSignal.emit()
+        self.Plaster.plasterEndSignal.emit()
+    
+    @pyqtSlot()
+    def searchMineEnd(self):
+        self.Delete.searchMineEndSignal.emit()
+
+    @pyqtSlot()
+    def deleteEnd(self):
+        self.Delete.deleteEndSignal.emit()
+
     def initialize(self):
         Data.initialize()
         Config.initialize()
@@ -32,6 +54,7 @@ class Window(QtWidgets.QMainWindow):
         self.Plaster = None
         self.Config = None
         self.currentMenu = None
+
 
     
     def clear(self):
