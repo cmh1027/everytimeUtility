@@ -97,7 +97,6 @@ class Delete(QtWidgets.QWidget):
 
     @pyqtSlot()
     def deleteEnd(self):
-        self.MainWindow.addProgressSignal.emit("[System] 삭제 완료")
         Config.Delete.deleting = False
         if self.MainWindow.currentMenu == "delete":
             btn = self.findChild(QtWidgets.QPushButton, "deleteButton")
@@ -107,6 +106,5 @@ class Delete(QtWidgets.QWidget):
 
     @pyqtSlot()
     def searchMineEnd(self):
-        self.MainWindow.addProgressSignal.emit("[System] 검색 완료")
         Config.Search.searchingMine = False
         self.MainWindow.deleteScreen()

@@ -240,10 +240,10 @@ class RequestHandle(QObject):
         threadedSearchMyArticles(articles)
         threadedSearchMyCommentedArticles(commentedArticles)
         threadedSearchMyComments(commentedArticles, comments)
-        
         # sorted(articles, key=lambda article:article["id"], reverse=True)
         # sorted(comments, key=lambda comment:comment["id"], reverse=True)
         Data.mine = {"article":articles, "comment":comments}
+        self.progress.emit("[System] 검색 완료")
         self.searchMineEnd.emit()
     
     def getMine(self):
@@ -357,6 +357,7 @@ class RequestHandle(QObject):
             threadedDeleteMyArticles(result["article"])
         if option["commentFlag"]:
             threadedDeleteMyComments(result["comment"])
+        self.progress.emit("[System] 삭제 완료")
         self.deleteEnd.emit()
         
 
@@ -435,12 +436,12 @@ class RequestHandle(QObject):
                     self.progress.emit("[System] {} 댓글 저장 중".format(board))
                     file.write("\n".join(list(map(lambda comment:comment["comment"]["text"], Data.others["comment"]))))
                     self.progress.emit("[System] {} 댓글 저장 완료".format(board))
+        self.progress.emit("[System] 검색 완료")
         self.searchOthersEnd.emit()
 
         
 
     def searchOthers(self, option):
-        
         thread = CustomThread(self.searchOthersTarget, self.threadFinished, "searchOthers", (Config.All.threadCount, option))
         self.threads["searchOthers"][thread] = thread
         thread.start()
@@ -627,6 +628,7 @@ class RequestHandle(QObject):
             self.articleCyclePlaster(option)
         else:
             self.stringCyclePlaster(option)
+        self.progress.emit("[System] 도배 완료")
         self.plasterEnd.emit()
 
     def plaster(self, option):

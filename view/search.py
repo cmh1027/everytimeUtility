@@ -154,7 +154,6 @@ class Search(QtWidgets.QWidget):
 
     @pyqtSlot()
     def searchOthersEnd(self):
-        self.MainWindow.addProgressSignal.emit("[System] 검색 완료")
         Config.Search.searchingOthers = False
         if self.MainWindow.currentMenu == "search":
             btn = self.findChild(QtWidgets.QPushButton, "searchButton")

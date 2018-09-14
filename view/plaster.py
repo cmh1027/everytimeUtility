@@ -129,7 +129,6 @@ class Plaster(QtWidgets.QWidget):
 
     @pyqtSlot()
     def plasterEnd(self):
-        self.MainWindow.addProgressSignal.emit("[System] 도배 완료")
         Config.Plaster.plastering = False
         if self.MainWindow.currentMenu == "search":
             self.MainWindow.Search.plasterEndSignal.emit()
