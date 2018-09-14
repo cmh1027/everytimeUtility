@@ -472,18 +472,18 @@ class RequestHandle(QObject):
                                 self.deleteComment(response)
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1, len(option["article"])*option["iteration"]))
+                                article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), len(option["article"])*option["iteration"]))
                             break
                         elif response == 0:
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1, len(option["article"])*option["iteration"]))  
+                                article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), len(option["article"])*option["iteration"]))  
                             deletedArticles.append(article)
                             break
                         elif response == -1:
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1, len(option["article"])*option["iteration"]))
+                                article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), len(option["article"])*option["iteration"]))
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
@@ -500,18 +500,18 @@ class RequestHandle(QObject):
                                 self.deleteComment(response)
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1, len(option["comment"]*option["iteration"])))
+                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"])))
                             break
                         elif response == 0:
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1, len(option["comment"]*option["iteration"])))
+                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"])))
                             deletedComments.append(comment)
                             break
                         elif response == -1:
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1, len(option["comment"]*option["iteration"])))
+                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"])))
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
@@ -549,18 +549,18 @@ class RequestHandle(QObject):
                                 self.deleteComment(response)
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1, len(option["plasterWord"])*option["iteration"]))
+                                article["board"], article["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
                             break
                         elif response == 0:
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1, len(option["plasterWord"])*option["iteration"]))  
+                                article["board"], article["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))  
                             deletedArticles.append(article)
                             break
                         elif response == -1:
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1, len(option["plasterWord"])*option["iteration"]))
+                                article["board"], article["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
@@ -584,18 +584,18 @@ class RequestHandle(QObject):
                                 self.deleteComment(response)
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 성공 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])*option["iteration"]))
+                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
                             break
                         elif response == 0:
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])*option["iteration"]))
+                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
                             deletedComments.append(comment)
                             break
                         elif response == -1:
                             if Config.Plaster.printPlasterFlag:
                                 self.progress.emit("[System] https://www.everytime.kr/{}/v/{} 실패 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1, len(option["plasterWord"])*option["iteration"]))
+                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
