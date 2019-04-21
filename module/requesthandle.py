@@ -82,7 +82,8 @@ class RequestHandle(QObject):
         soup = BeautifulSoup(response, 'html.parser')
         boards = soup.find("div", {"id":"submenu"}).findAll("a", class_=lambda x: x!="search")
         for board in boards:
-            result[board.getText()] = board["href"].replace("/", "")
+            if board.has_attr("href"):
+                result[board.getText()] = board["href"].replace("/", "")
         return result
             
 

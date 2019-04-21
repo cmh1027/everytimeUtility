@@ -7,6 +7,6 @@ class MessageDialog(QtWidgets.QMessageBox):
         self.setWindowIcon(QIcon("icon.ico"))
         self.setWindowTitle(title)
         self.setText(content)
-        self.setIcon(QMessageBox.Critical)
+        self.setIcon(QMessageBox.Information)
         self.setStyleSheet("QPushButton{background-color: white;}")
         self.show()
