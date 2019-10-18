@@ -177,5 +177,6 @@ class Window(QtWidgets.QMainWindow):
     @pyqtSlot(str)
     def addProgress(self, string):
         progressTextEdit = self.findChild(QtWidgets.QTextEdit, "progressTextEdit")
-        text = progressTextEdit.toPlainText()
-        progressTextEdit.setText(text+string+"\n")
+        if progressTextEdit is not None: # temporary bug fix
+            text = progressTextEdit.toPlainText()
+            progressTextEdit.setText(text+string+"\n")

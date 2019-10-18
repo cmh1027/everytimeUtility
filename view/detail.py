@@ -48,6 +48,7 @@ class OthersDetail(QtWidgets.QDialog):
                 articleTableWidget.setItem(row, 4, item)
                 item = QtWidgets.QTableWidgetItem("https://www.everytime.kr/{}/v/{}".format(boardId, article["article"]["id"]))
                 articleTableWidget.setItem(row, 5, item)
+                print("{0} {1}".format(article["article"]["title"], article["article"]["created_at"]))
         if "comment" in Data.others:
             for row, comment in enumerate(Data.others["comment"]):
                 commentTableWidget.insertRow(row)
