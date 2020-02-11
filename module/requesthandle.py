@@ -121,7 +121,7 @@ class RequestHandle(QObject):
     def searchComment(self, article, option=None):
         data = {"id":article["id"], "limit_num":-1, "moiminfo":True}
         header = {
-            "Host": "everytime.kr",
+            "Host": "api.everytime.kr",
             "Connection": "keep-alive",
             "Accept": "*/*",
             "Origin": "https://everytime.kr",
@@ -135,7 +135,7 @@ class RequestHandle(QObject):
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
         }
         header["Content-Length"] = str(len("id={}&limit_num=-1&moiminfo=true".format(article["id"])))
-        response = self.req.post("https://everytime.kr/find/board/comment/list", data=data, headers=header)
+        response = self.req.post("https://api.everytime.kr/find/board/comment/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         if option is None:
             result = list(map(lambda comment:{"article":article, "comment":comment}, soup.findAll("comment", {"is_mine":"1"})))
@@ -154,21 +154,20 @@ class RequestHandle(QObject):
     def searchArticle(self, _id, page, option=None):
         data = {"id":_id, "limit_num":20, "start_num":page*20}
         header = {
-            "Host": "everytime.kr",
+            "Host": "api.everytime.kr",
             "Connection": "keep-alive",
             "Accept": "*/*",
-            "Origin": "https://everytime.kr",
-            "X-Requested-With": "XMLHttpRequest",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36",
-            "Sec-Fetch-Mode": "cors",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36",
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "Sec-Fetch-Site": "same-origin",
+            "Origin": "https://everytime.kr",
+            "Sec-Fetch-Site": "same-site",
+            "Sec-Fetch-Mode": "cors",
             "Referer": "https://everytime.kr/",
             "Accept-Encoding": "gzip, deflate, br",
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
         }
         header["Content-Length"] = str(len("id={}&limit_num=20&start_num={}".format(_id, page*20)))
-        response = self.req.post("https://everytime.kr/find/board/article/list", data=data, headers=header)
+        response = self.req.post("https://api.everytime.kr/find/board/article/list", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         if option is None:
             return soup.findAll("article")
@@ -180,7 +179,7 @@ class RequestHandle(QObject):
 
     def postComment(self, article, string, isAnonym):
         header = {
-            "Host": "everytime.kr",
+            "Host": "api.everytime.kr",
             "Connection": "keep-alive",
             "Accept": "*/*",
             "Origin": "https://everytime.kr",
@@ -195,13 +194,13 @@ class RequestHandle(QObject):
         }
         header["Content-Length"] = str(len("text={}&is_anonym={}&id={}".format(parse.quote(string.encode('utf-8')), int(isAnonym), article["id"]))) 
         data = {"text":string.encode('utf-8'), "is_anonym":"1", "id":article["id"]}
-        response = self.req.post("https://everytime.kr/save/board/comment", data=data, headers=header)
+        response = self.req.post("https://api.everytime.kr/save/board/comment", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         return int(soup.find("response").text)
 
     def postSubcomment(self, comment, string, isAnonym):
         header = {
-            "Host": "everytime.kr",
+            "Host": "api.everytime.kr",
             "Connection": "keep-alive",
             "Accept": "*/*",
             "Origin": "https://everytime.kr",
@@ -216,7 +215,7 @@ class RequestHandle(QObject):
         }
         header["Content-Length"] = str(len("text={}&is_anonym={}&comment_id={}".format(parse.quote(string.encode('utf-8')), int(isAnonym), comment["id"])))  
         data = {"text":string.encode('utf-8'), "is_anonym":"1", "comment_id": comment["id"]}
-        response = self.req.post("https://everytime.kr/save/board/comment", data=data, headers=header)
+        response = self.req.post("https://api.everytime.kr/save/board/comment", data=data, headers=header)
         soup = BeautifulSoup(response.text, 'html.parser')
         return int(soup.find("response").text)
 
@@ -276,7 +275,7 @@ class RequestHandle(QObject):
     
     def deleteArticle(self, _id):
         header = {
-            "Host": "everytime.kr",
+            "Host": "api.everytime.kr",
             "Connection": "keep-alive",
             "Accept": "*/*",
             "Origin": "https://everytime.kr",
@@ -290,7 +289,7 @@ class RequestHandle(QObject):
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
         }
         header["Content-Length"] = str(len("id={}".format(_id)))
-        response = self.req.post("https://everytime.kr/remove/board/article", data={"id":_id})
+        response = self.req.post("https://api.everytime.kr/remove/board/article", data={"id":_id})
         soup = BeautifulSoup(response.text, 'html.parser')
         if int(soup.find("response").text) == 1:
             return True
@@ -299,7 +298,7 @@ class RequestHandle(QObject):
 
     def deleteComment(self, _id):
         header = {
-            "Host": "everytime.kr",
+            "Host": "api.everytime.kr",
             "Connection": "keep-alive",
             "Accept": "*/*",
             "Origin": "https://everytime.kr",
@@ -313,7 +312,7 @@ class RequestHandle(QObject):
             "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"
         }
         header["Content-Length"] = str(len("id={}".format(_id)))
-        response = self.req.post("https://everytime.kr/remove/board/comment", data={"id":_id})
+        response = self.req.post("https://api.everytime.kr/remove/board/comment", data={"id":_id})
         soup = BeautifulSoup(response.text, 'html.parser')
         if int(soup.find("response").text) == 1:
             return True
