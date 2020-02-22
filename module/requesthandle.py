@@ -483,6 +483,15 @@ class RequestHandle(QObject):
         else:
             return False
     
+    def plasterSuccess(self, board, id_, current, count):
+        self.progress.emit("[System] https://everytime.kr/{}/v/{} 성공 {}/{}".format(board, id_, current, count))
+
+    def plasterDeleted(self, board, id_, current, count):
+        self.progress.emit("[System] https://everytime.kr/{}/v/{} 삭제됨 {}/{}".format(board, id_, current, count))
+
+    def plasterFailed(self, board, id_, current, count):
+        self.progress.emit("[System] https://everytime.kr/{}/v/{} 실패 {}/{}".format(board, id_, current, count))
+
     def articleCyclePlaster(self, option):
         iteration = 0
         wordIndex = 0
@@ -500,25 +509,23 @@ class RequestHandle(QObject):
                             if option["delete"]:
                                 self.deleteComment(response)
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 성공 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), len(option["article"])*option["iteration"]))
+                                self.plasterSuccess(article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), option["iteration"])
                             break
                         elif response == 0:
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), len(option["article"])*option["iteration"]))  
+                                self.plasterDeleted(article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), option["iteration"])
                             deletedArticles.append(article)
                             break
                         elif response == -1:
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 실패 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), len(option["article"])*option["iteration"]))
+                                self.plasterFailed(article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), option["iteration"])
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
                             time.sleep(option["interval"])
                     wordIndex = (wordIndex + 1) % len(option["plasterWord"])
-                    time.sleep(option["interval"])
+                    if iteration < option["iteration"]-1:
+                        time.sleep(option["interval"])
             if option["commentFlag"]:
                 for index, comment in enumerate(option["comment"]):
                     retry = 0
@@ -528,25 +535,23 @@ class RequestHandle(QObject):
                             if option["delete"]:
                                 self.deleteComment(response)
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 성공 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"])))
+                                self.plasterSuccess(comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"]))
                             break
                         elif response == 0:
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"])))
-                            deletedComments.append(comment)
+                                self.plasterDeleted(comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"]))
+                                deletedComments.append(comment)
                             break
                         elif response == -1:
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 실패 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"])))
+                                self.plasterFailed(comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"]))
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
                             time.sleep(option["interval"])
                     wordIndex = (wordIndex + 1) % len(option["plasterWord"])
-                    time.sleep(option["interval"])
+                    if iteration < option["iteration"]-1:
+                        time.sleep(option["interval"])
             if option["articleFlag"]:
                 for article in deletedArticles:
                     option["article"].remove(article)
@@ -577,26 +582,24 @@ class RequestHandle(QObject):
                             if option["delete"]:
                                 self.deleteComment(response)
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 성공 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
+                                self.plasterSuccess(article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), option["iteration"])
                             break
                         elif response == 0:
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))  
+                                self.plasterDeleted(article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), option["iteration"])
                             deletedArticles.append(article)
                             break
                         elif response == -1:
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 실패 {}/{}".format(\
-                                article["board"], article["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
+                                self.plasterFailed(article["board"], article["article"]["id"], index+1+iteration*len(option["article"]), option["iteration"])
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
                             time.sleep(option["interval"])
                     articleIndex += 1
                     currentIndex = index + 1
-                    time.sleep(option["interval"])
+                    if iteration < option["iteration"]-1:
+                        time.sleep(option["interval"])
                     if articleIndex == len(option["article"]):
                         articleIndex = 0
                         break
@@ -612,26 +615,24 @@ class RequestHandle(QObject):
                             if option["delete"]:
                                 self.deleteComment(response)
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 성공 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
+                                self.plasterSuccess(comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"]))
                             break
                         elif response == 0:
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 삭제됨 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
+                                self.plasterDeleted(comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"]))
                             deletedComments.append(comment)
                             break
                         elif response == -1:
                             if Config.Plaster.printPlasterFlag:
-                                self.progress.emit("[System] https://everytime.kr/{}/v/{} 실패 {}/{}".format(\
-                                comment["board"], comment["article"]["id"], index+1+iteration*len(option["plasterWord"]), len(option["plasterWord"])*option["iteration"]))
+                               self.plasterFailed(comment["board"], comment["article"]["id"], index+1+iteration*len(option["article"]), len(option["comment"]*option["iteration"]))
                             retry = retry + 1
                             if retry > option["retry"]:
                                 break
                             time.sleep(option["interval"])
                     commentIndex += 1
                     currentIndex = index + 1
-                    time.sleep(option["interval"])
+                    if iteration < option["iteration"]-1:
+                        time.sleep(option["interval"])
                     if commentIndex == len(option["comment"]):
                         commentIndex = 0
                         break
@@ -650,7 +651,7 @@ class RequestHandle(QObject):
             if currentIndex == len(option["plasterWord"]):
                 iteration += 1
                 currentIndex = 0
-
+    
     def plasterTarget(self, option):
         if option["articleCycle"] is True:
             self.articleCyclePlaster(option)
